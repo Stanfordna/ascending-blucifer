@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout C: Bohemian Colorado - Maggie Chamberlain, MS, RD, CDCES</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mountain-blue: #5B7FA4;
+            --mountain-blue-light: #7A9BB8;
+            --mountain-blue-dark: #3D5F7E;
+            --terracotta: #C4785A;
+            --terracotta-light: #D99A7D;
+            --terracotta-dark: #A85D42;
+            --gold: #D4A84B;
+            --gold-light: #E5C070;
+            --cream: #FDF8F3;
+            --cream-dark: #F5EDE4;
+            --charcoal: #2C3E4A;
+            --charcoal-light: #4A5E6A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--charcoal);
+            background: var(--cream);
+            line-height: 1.7;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .script {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(253, 248, 243, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: var(--mountain-blue-dark);
+            text-decoration: none;
+        }
+
+        nav .logo span {
+            font-family: 'Dancing Script', cursive;
+            color: var(--terracotta);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--charcoal-light);
+            font-weight: 500;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--terracotta);
+        }
+
+        /* Decorative Elements */
+        .botanical {
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0.1;
+            color: var(--mountain-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(212, 168, 75, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(91, 127, 164, 0.1) 0%, transparent 50%),
+                var(--cream);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L30 60M0 30L60 30' stroke='%235B7FA4' stroke-width='0.5' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .hero .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-content .eyebrow {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--terracotta);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .hero-content h1 span {
+            color: var(--mountain-blue);
+            display: block;
+        }
+
+        .hero-content .tagline {
+            font-size: 1.2rem;
+            color: var(--charcoal-light);
+            margin-bottom: 2rem;
+            max-width: 500px;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--terracotta);
+            color: white;
+            border: 2px solid var(--terracotta);
+            border-radius: 0;
+        }
+
+        .btn-primary:hover {
+            background: var(--terracotta-dark);
+            border-color: var(--terracotta-dark);
+        }
+
+        .btn-text {
+            color: var(--mountain-blue-dark);
+            padding: 1rem 0;
+            position: relative;
+        }
+
+        .btn-text::after {
+            content: '';
+            position: absolute;
+            bottom: 0.75rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .btn-text:hover::after {
+            transform: scaleX(1);
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-image .frame-outer {
+            position: relative;
+            padding: 1.5rem;
+        }
+
+        .hero-image .frame-outer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 2rem;
+            bottom: 2rem;
+            border: 3px solid var(--gold);
+            opacity: 0.5;
+        }
+
+        .hero-image .photo-frame {
+            position: relative;
+            z-index: 1;
+            margin-left: 2rem;
+            margin-top: 2rem;
+        }
+
+        .hero-image .photo-inner {
+            width: 100%;
+            aspect-ratio: 3/4;
+            background: linear-gradient(135deg, var(--mountain-blue) 0%, var(--mountain-blue-dark) 100%);
+            overflow: hidden;
+        }
+
+        .hero-image .photo-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        .hero-image .accent-box {
+            position: absolute;
+            bottom: -1rem;
+            left: -1rem;
+            background: var(--terracotta);
+            color: white;
+            padding: 1.5rem 2rem;
+            z-index: 2;
+        }
+
+        .hero-image .accent-box .script {
+            font-size: 1.3rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .hero-image .accent-box span {
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        /* Decorative Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 3rem 0;
+            background: var(--cream);
+        }
+
+        .divider .line {
+            width: 100px;
+            height: 1px;
+            background: var(--gold);
+        }
+
+        .divider .icon {
+            font-size: 1.5rem;
+            color: var(--mountain-blue);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 5rem 2rem;
+            background: var(--cream-dark);
+            position: relative;
+        }
+
+        .services .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header .script {
+            font-size: 1.8rem;
+            color: var(--terracotta);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            color: var(--charcoal);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--cream);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: var(--gold);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(91, 127, 164, 0.1);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            border: 2px solid var(--mountain-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--mountain-blue);
+            transition: all 0.3s;
+        }
+
+        .service-card:hover .service-icon {
+            background: var(--mountain-blue);
+            color: white;
+        }
+
+        .service-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--charcoal);
+        }
+
+        .service-card p {
+            color: var(--charcoal-light);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        /* About Section */
+        .about {
+            padding: 6rem 2rem;
+            background: var(--mountain-blue);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='40' stroke='white' stroke-width='0.5' fill='none' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        .about .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 5rem;
+            align-items: center;
+            position: relative;
+        }
+
+        .about-images {
+            position: relative;
+        }
+
+        .about-images .main-img {
+            width: 80%;
+            aspect-ratio: 4/3;
+            background: var(--mountain-blue-light);
+            border: 5px solid white;
+        }
+
+        .about-images .secondary-img {
+            position: absolute;
+            bottom: -2rem;
+            right: 0;
+            width: 60%;
+            aspect-ratio: 4/3;
+            background: var(--mountain-blue-dark);
+            border: 5px solid var(--gold);
+        }
+
+        .about-images .main-img img,
+        .about-images .secondary-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-content .script {
+            font-size: 1.8rem;
+            color: var(--gold-light);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .about-content h2 {
+            font-size: 2.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .about-content p {
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+
+        .credentials-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .credential {
+            background: rgba(255,255,255,0.1);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Blog Section */
+        .blog {
+            padding: 6rem 2rem;
+            background: var(--cream);
+        }
+
+        .blog .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .blog-card {
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+
+        .blog-card .image {
+            height: 220px;
+            background: linear-gradient(135deg, var(--terracotta-light) 0%, var(--terracotta) 100%);
+            position: relative;
+        }
+
+        .blog-card .image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 2rem;
+            right: 2rem;
+            height: 3px;
+            background: var(--gold);
+        }
+
+        .blog-card .content {
+            padding: 2rem;
+        }
+
+        .blog-card .date {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.2rem;
+            color: var(--terracotta);
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
+            color: var(--charcoal);
+        }
+
+        .blog-card p {
+            color: var(--charcoal-light);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        .blog-card .read-more {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--mountain-blue);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .blog-card .read-more:hover {
+            color: var(--terracotta);
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 6rem 2rem;
+            background:
+                linear-gradient(rgba(196, 120, 90, 0.9), rgba(196, 120, 90, 0.9)),
+                url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L40 20L20 40L0 20z' fill='white' opacity='0.05'/%3E%3C/svg%3E");
+            text-align: center;
+            color: white;
+        }
+
+        .cta .script {
+            font-size: 2rem;
+            color: var(--gold-light);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta h2 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+
+        .cta .btn {
+            background: white;
+            color: var(--terracotta);
+            border: none;
+        }
+
+        .cta .btn:hover {
+            background: var(--cream);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 2rem 2rem;
+            background: var(--charcoal);
+            color: white;
+        }
+
+        footer .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        footer .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        footer .brand h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        footer .brand h3 span {
+            font-family: 'Dancing Script', cursive;
+            color: var(--gold);
+        }
+
+        footer .brand p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        footer h4 {
+            font-size: 0.85rem;
+            margin-bottom: 1.25rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--gold);
+        }
+
+        footer ul {
+            list-style: none;
+        }
+
+        footer ul li {
+            margin-bottom: 0.75rem;
+        }
+
+        footer ul a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 300;
+            transition: color 0.3s;
+        }
+
+        footer ul a:hover {
+            color: var(--terracotta-light);
+        }
+
+        footer .divider-line {
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin-bottom: 2rem;
+        }
+
+        footer .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer .copyright {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.85rem;
+        }
+
+        footer .social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        footer .social a {
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+
+        footer .social a:hover {
+            color: var(--gold);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero .container,
+            .about .container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-image {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            footer .footer-top {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-images .secondary-img {
+                position: relative;
+                width: 100%;
+                margin-top: 1rem;
+                bottom: 0;
+            }
+
+            footer .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            footer .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">Maggie <span>Chamberlain</span></a>
+            <ul>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#blog">Journal</a></li>
+                <li><a href="#contact">Connect</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="eyebrow">Diabetes Care & Nutrition</span>
+                <h1>Nourishing Your Journey <span>to Wellness</span></h1>
+                <p class="tagline">Expert guidance in diabetes management and nutrition, rooted in the spirit of the Colorado mountains. Together, we'll find your path to thriving.</p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-primary">Begin Your Journey</a>
+                    <a href="#services" class="btn btn-text">Explore Services &rarr;</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="frame-outer">
+                    <div class="photo-frame">
+                        <div class="photo-inner">
+                            <img src="maggie.jpg" alt="Maggie Chamberlain, MS, RD, CDCES">
+                        </div>
+                    </div>
+                </div>
+                <div class="accent-box">
+                    <span class="script">Certified</span>
+                    <span>MS, RD, CDCES</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider">
+        <div class="line"></div>
+        <div class="icon">&#x2726;</div>
+        <div class="line"></div>
+    </div>
+
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <span class="script">How I Help</span>
+                <h2>Services Offered</h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">&#x1F489;</div>
+                    <h3>Diabetes Education</h3>
+                    <p>Personalized strategies for blood sugar management and living well with Type 1 or Type 2 diabetes.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">&#x1F33F;</div>
+                    <h3>Nutrition Guidance</h3>
+                    <p>Evidence-based meal planning that honors your lifestyle and supports your health goals.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">&#x2699;</div>
+                    <h3>Pump Training</h3>
+                    <p>Expert instruction on insulin pumps and automated delivery systems including bionic pancreas.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">&#x1F3A4;</div>
+                    <h3>Speaking</h3>
+                    <p>Engaging presentations for healthcare groups, conferences, and community organizations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-images">
+                <div class="main-img">
+                    <img src="mountain-goats.jpg" alt="Colorado Mountain Goats">
+                </div>
+                <div class="secondary-img">
+                    <img src="mountain-goats.jpg" alt="Colorado Mountains" style="object-position: right center;">
+                </div>
+            </div>
+            <div class="about-content">
+                <span class="script">About Maggie</span>
+                <h2>A Colorado Heart, A Healing Mission</h2>
+                <p>With the determination of Colorado's mountain goats and over seven years of clinical experience, I've dedicated my career to helping people with diabetes discover what's possible for their health.</p>
+                <p>From hospital bedside to cutting-edge medical device innovation with Beta Bionics and Tandem Diabetes Care, my journey has always been guided by one mission: empowering individuals to take control of their health with confidence and joy.</p>
+                <div class="credentials-row">
+                    <span class="credential">Master of Science</span>
+                    <span class="credential">Registered Dietitian</span>
+                    <span class="credential">CDCES Certified</span>
+                    <span class="credential">Louisiana Tech University</span>
+                    <span class="credential">MSU Denver</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="blog" id="blog">
+        <div class="container">
+            <div class="section-header">
+                <span class="script">The Journal</span>
+                <h2>Insights & Inspiration</h2>
+            </div>
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="image"></div>
+                    <div class="content">
+                        <span class="date">January 2026</span>
+                        <h3>The Art of Mindful Eating with Diabetes</h3>
+                        <p>Discover how presence and intention can transform your relationship with food and blood sugar.</p>
+                        <a href="#" class="read-more">Read More &rarr;</a>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <div class="image"></div>
+                    <div class="content">
+                        <span class="date">December 2025</span>
+                        <h3>Mountain Adventures & Diabetes</h3>
+                        <p>Tips for managing your glucose while exploring Colorado's beautiful trails and peaks.</p>
+                        <a href="#" class="read-more">Read More &rarr;</a>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <div class="image"></div>
+                    <div class="content">
+                        <span class="date">November 2025</span>
+                        <h3>Understanding Your Bionic Pancreas</h3>
+                        <p>A gentle guide to the technology that's revolutionizing automated insulin delivery.</p>
+                        <a href="#" class="read-more">Read More &rarr;</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="contact">
+        <span class="script">Let's Connect</span>
+        <h2>Ready to Begin?</h2>
+        <p>Your journey to better health starts with a conversation. Schedule a consultation and let's explore what's possible together.</p>
+        <a href="#" class="btn">Schedule Your Consultation</a>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-top">
+                <div class="brand">
+                    <h3>Maggie <span>Chamberlain</span></h3>
+                    <p>Registered Dietitian & Certified Diabetes Care and Education Specialist, helping people thrive from the heart of Colorado.</p>
+                </div>
+                <div>
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Diabetes Education</a></li>
+                        <li><a href="#">Nutrition Guidance</a></li>
+                        <li><a href="#">Pump Training</a></li>
+                        <li><a href="#">Speaking</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Journal</a></li>
+                        <li><a href="#">Resources</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Denver, Colorado</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Email</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="divider-line"></div>
+            <div class="footer-bottom">
+                <p class="copyright">&copy; 2026 Maggie Chamberlain, MS, RD, CDCES</p>
+                <div class="social">
+                    <a href="#">LinkedIn</a>
+                    <a href="#">Instagram</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,64 @@
+# =============================================================================
+# Docker Ignore - Maggie Chamberlain Dietitian Website
+# =============================================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE and editors
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Dependencies (installed in container)
+/node_modules
+/vendor
+
+# Build artifacts
+/public/build
+/public/hot
+
+# Environment files (use container env vars)
+.env
+.env.*
+!.env.example
+
+# Logs and cache
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/framework/cache/*
+!/storage/framework/cache/.gitkeep
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitkeep
+/storage/framework/views/*
+!/storage/framework/views/.gitkeep
+/bootstrap/cache/*
+!/bootstrap/cache/.gitkeep
+
+# Testing
+/coverage
+.phpunit.result.cache
+phpunit.xml
+
+# Documentation
+/docs
+*.md
+!README.md
+
+# Docker files (not needed in image context)
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Sample layouts (development only)
+/samples
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db

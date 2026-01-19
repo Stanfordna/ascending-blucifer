@@ -1,0 +1,135 @@
+# =============================================================================
+# Maggie Chamberlain Dietitian Website - Development Dockerfile
+# Alpine with PHP 8.3, Python 3.11, Node.js for Vite hot reload
+# =============================================================================
+
+FROM alpine:3.19
+
+LABEL maintainer="Nicholas Stanford"
+LABEL description="Maggie Chamberlain Dietitian Website - Development"
+
+# Environment variables
+ENV APP_ENV=local
+ENV APP_DEBUG=true
+ENV LOG_CHANNEL=stack
+
+# Install development dependencies
+RUN apk add --no-cache \
+    # PHP and extensions
+    php83 \
+    php83-fpm \
+    php83-pdo \
+    php83-pdo_sqlite \
+    php83-sqlite3 \
+    php83-mbstring \
+    php83-xml \
+    php83-dom \
+    php83-curl \
+    php83-openssl \
+    php83-json \
+    php83-phar \
+    php83-tokenizer \
+    php83-fileinfo \
+    php83-ctype \
+    php83-session \
+    php83-gd \
+    php83-bcmath \
+    php83-pcntl \
+    php83-posix \
+    php83-xdebug \
+    # Composer
+    composer \
+    # Python for AI/ML and image processing
+    python3 \
+    py3-pip \
+    py3-pillow \
+    py3-numpy \
+    # Node.js for Vite
+    nodejs \
+    npm \
+    # Web server and process manager
+    nginx \
+    supervisor \
+    # Development utilities
+    curl \
+    git \
+    sqlite \
+    bash \
+    vim \
+    && ln -s /usr/bin/php83 /usr/bin/php \
+    && ln -s /usr/sbin/php-fpm83 /usr/sbin/php-fpm
+
+# Create application user
+RUN addgroup -g 1000 www \
+    && adduser -u 1000 -G www -h /var/www -D www
+
+# Configure PHP-FPM for development
+RUN echo "[www]" > /etc/php83/php-fpm.d/www.conf \
+    && echo "user = www" >> /etc/php83/php-fpm.d/www.conf \
+    && echo "group = www" >> /etc/php83/php-fpm.d/www.conf \
+    && echo "listen = 127.0.0.1:9000" >> /etc/php83/php-fpm.d/www.conf \
+    && echo "pm = dynamic" >> /etc/php83/php-fpm.d/www.conf \
+    && echo "pm.max_children = 5" >> /etc/php83/php-fpm.d/www.conf \
+    && echo "pm.start_servers = 2" >> /etc/php83/php-fpm.d/www.conf \
+    && echo "pm.min_spare_servers = 1" >> /etc/php83/php-fpm.d/www.conf \
+    && echo "pm.max_spare_servers = 3" >> /etc/php83/php-fpm.d/www.conf \
+    && echo "clear_env = no" >> /etc/php83/php-fpm.d/www.conf
+
+# Configure Nginx for development
+RUN echo 'worker_processes auto;' > /etc/nginx/nginx.conf \
+    && echo 'error_log /var/log/nginx/error.log warn;' >> /etc/nginx/nginx.conf \
+    && echo 'pid /run/nginx/nginx.pid;' >> /etc/nginx/nginx.conf \
+    && echo 'events { worker_connections 1024; }' >> /etc/nginx/nginx.conf \
+    && echo 'http {' >> /etc/nginx/nginx.conf \
+    && echo '    include /etc/nginx/mime.types;' >> /etc/nginx/nginx.conf \
+    && echo '    default_type application/octet-stream;' >> /etc/nginx/nginx.conf \
+    && echo '    sendfile on;' >> /etc/nginx/nginx.conf \
+    && echo '    keepalive_timeout 65;' >> /etc/nginx/nginx.conf \
+    && echo '    include /etc/nginx/http.d/*.conf;' >> /etc/nginx/nginx.conf \
+    && echo '}' >> /etc/nginx/nginx.conf
+
+# Configure Nginx site
+RUN mkdir -p /etc/nginx/http.d \
+    && echo 'server {' > /etc/nginx/http.d/default.conf \
+    && echo '    listen 80;' >> /etc/nginx/http.d/default.conf \
+    && echo '    server_name localhost;' >> /etc/nginx/http.d/default.conf \
+    && echo '    root /var/www/html/public;' >> /etc/nginx/http.d/default.conf \
+    && echo '    index index.php index.html;' >> /etc/nginx/http.d/default.conf \
+    && echo '    location / {' >> /etc/nginx/http.d/default.conf \
+    && echo '        try_files $uri $uri/ /index.php?$query_string;' >> /etc/nginx/http.d/default.conf \
+    && echo '    }' >> /etc/nginx/http.d/default.conf \
+    && echo '    location ~ \.php$ {' >> /etc/nginx/http.d/default.conf \
+    && echo '        fastcgi_pass 127.0.0.1:9000;' >> /etc/nginx/http.d/default.conf \
+    && echo '        fastcgi_index index.php;' >> /etc/nginx/http.d/default.conf \
+    && echo '        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;' >> /etc/nginx/http.d/default.conf \
+    && echo '        include fastcgi_params;' >> /etc/nginx/http.d/default.conf \
+    && echo '    }' >> /etc/nginx/http.d/default.conf \
+    && echo '}' >> /etc/nginx/http.d/default.conf
+
+# Configure Supervisor for development
+RUN mkdir -p /etc/supervisor/conf.d \
+    && echo '[supervisord]' > /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'nodaemon=true' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'user=root' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo '' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo '[program:php-fpm]' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'command=/usr/sbin/php-fpm -F' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo '' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo '[program:nginx]' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'command=/usr/sbin/nginx -g "daemon off;"' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'autostart=true' >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo 'autorestart=true' >> /etc/supervisor/conf.d/supervisord.conf
+
+# Create nginx run directory
+RUN mkdir -p /run/nginx
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Expose ports (80 for Nginx, 5173 for Vite)
+EXPOSE 80 5173
+
+# Start supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

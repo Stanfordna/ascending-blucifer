@@ -1,0 +1,101 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../**/*.vue';
+
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&family=Dancing+Script:wght@500;600&display=swap');
+
+@theme {
+    /* Bohemian Colorado Color Palette */
+    --color-mountain-blue: #5B7FA4;
+    --color-mountain-blue-light: #7A9BB8;
+    --color-mountain-blue-dark: #3D5F7E;
+    --color-terracotta: #C4785A;
+    --color-terracotta-light: #D99A7D;
+    --color-terracotta-dark: #A85D42;
+    --color-gold: #D4A84B;
+    --color-gold-light: #E5C070;
+    --color-cream: #FDF8F3;
+    --color-cream-dark: #F5EDE4;
+    --color-charcoal: #2C3E4A;
+    --color-charcoal-light: #4A5E6A;
+
+    /* Typography */
+    --font-sans: 'Montserrat', ui-sans-serif, system-ui, sans-serif;
+    --font-serif: 'Cormorant Garamond', ui-serif, Georgia, serif;
+    --font-script: 'Dancing Script', cursive;
+}
+
+/* Base Styles */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: var(--font-sans);
+        color: var(--color-charcoal);
+        background-color: var(--color-cream);
+        line-height: 1.7;
+    }
+
+    h1, h2, h3 {
+        font-family: var(--font-serif);
+        font-weight: 600;
+        line-height: 1.2;
+    }
+}
+
+/* Utility Classes */
+@layer utilities {
+    .font-script {
+        font-family: var(--font-script);
+    }
+
+    .font-serif {
+        font-family: var(--font-serif);
+    }
+
+    .text-shadow {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Component Styles */
+@layer components {
+    .btn {
+        @apply inline-block px-8 py-4 font-semibold text-sm tracking-wider uppercase transition-all duration-300;
+    }
+
+    .btn-primary {
+        @apply bg-terracotta text-white border-2 border-terracotta;
+    }
+
+    .btn-primary:hover {
+        @apply bg-terracotta-dark border-terracotta-dark;
+    }
+
+    .btn-white {
+        @apply bg-white text-terracotta border-none;
+    }
+
+    .btn-white:hover {
+        @apply bg-cream;
+    }
+
+    .section-header {
+        @apply text-center mb-16;
+    }
+
+    .section-header .script {
+        @apply font-script text-3xl text-terracotta block mb-2;
+    }
+
+    .section-header h2 {
+        @apply text-5xl text-charcoal;
+    }
+}

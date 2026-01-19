@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout A: Mountain Serenity - Maggie Chamberlain, MS, RD, CDCES</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sky-blue: #4A90A4;
+            --sky-blue-light: #6BA3B5;
+            --sky-blue-dark: #3A7A8E;
+            --cream: #FAF8F5;
+            --cream-dark: #F0EDE8;
+            --slate: #475569;
+            --slate-light: #64748B;
+            --warm-white: #FEFDFB;
+            --accent-gold: #C9A86C;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--slate);
+            background: var(--cream);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(250, 248, 245, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(74, 144, 164, 0.1);
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--sky-blue-dark);
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--slate);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--sky-blue);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(180deg, var(--cream) 0%, var(--warm-white) 100%);
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: radial-gradient(ellipse, rgba(74, 144, 164, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            color: var(--slate);
+            margin-bottom: 1rem;
+        }
+
+        .hero-content h1 span {
+            color: var(--sky-blue);
+        }
+
+        .hero-content .credentials {
+            font-size: 1.1rem;
+            color: var(--sky-blue-dark);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--slate-light);
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--sky-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--sky-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(74, 144, 164, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--sky-blue);
+            border: 2px solid var(--sky-blue);
+            margin-left: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--sky-blue);
+            color: white;
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-image .photo-frame {
+            width: 100%;
+            max-width: 450px;
+            aspect-ratio: 3/4;
+            background: linear-gradient(135deg, var(--sky-blue-light) 0%, var(--sky-blue) 100%);
+            border-radius: 200px 200px 30px 30px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(74, 144, 164, 0.2);
+        }
+
+        .hero-image .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+        }
+
+        /* Curved Section Divider */
+        .curve-divider {
+            height: 100px;
+            background: var(--warm-white);
+            position: relative;
+        }
+
+        .curve-divider::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: var(--cream);
+            clip-path: ellipse(60% 100% at 50% 100%);
+        }
+
+        /* Services Section */
+        .services {
+            padding: 6rem 2rem;
+            background: var(--cream);
+        }
+
+        .services .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--slate);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--slate-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--warm-white);
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(74, 144, 164, 0.1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(74, 144, 164, 0.15);
+        }
+
+        .service-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--sky-blue-light), var(--sky-blue));
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--slate);
+        }
+
+        .service-card p {
+            color: var(--slate-light);
+            font-size: 0.95rem;
+        }
+
+        /* About Section */
+        .about {
+            padding: 6rem 2rem;
+            background: var(--warm-white);
+        }
+
+        .about .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-image {
+            position: relative;
+        }
+
+        .about-image .goat-frame {
+            width: 100%;
+            aspect-ratio: 16/10;
+            background: var(--cream);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .about-image .goat-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--slate);
+        }
+
+        .about-content p {
+            color: var(--slate-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .credentials-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .credential-badge {
+            background: var(--cream);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--sky-blue-dark);
+            font-weight: 500;
+        }
+
+        /* Blog Section */
+        .blog {
+            padding: 6rem 2rem;
+            background: var(--cream);
+        }
+
+        .blog .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .blog-card {
+            background: var(--warm-white);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .blog-card .image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--sky-blue-light), var(--sky-blue));
+        }
+
+        .blog-card .content {
+            padding: 1.5rem;
+        }
+
+        .blog-card .date {
+            font-size: 0.85rem;
+            color: var(--sky-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .blog-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--slate);
+        }
+
+        .blog-card p {
+            color: var(--slate-light);
+            font-size: 0.95rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, var(--sky-blue) 0%, var(--sky-blue-dark) 100%);
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            color: rgba(255,255,255,0.9);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            font-size: 1.1rem;
+        }
+
+        .cta .btn {
+            background: white;
+            color: var(--sky-blue-dark);
+        }
+
+        .cta .btn:hover {
+            background: var(--cream);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 2rem 2rem;
+            background: var(--slate);
+            color: white;
+        }
+
+        footer .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        footer .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        footer .brand h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        footer .brand p {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+        }
+
+        footer h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+
+        footer ul {
+            list-style: none;
+        }
+
+        footer ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        footer ul a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer ul a:hover {
+            color: white;
+        }
+
+        footer .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero .container,
+            .about .container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-content {
+                order: 2;
+            }
+
+            .hero-image {
+                order: 1;
+            }
+
+            .hero-image .photo-frame {
+                max-width: 350px;
+                margin: 0 auto;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            footer .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            footer .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">Maggie Chamberlain</a>
+            <ul>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <p class="credentials">MS, RD, CDCES</p>
+                <h1>Empowering Your <span>Diabetes Journey</span></h1>
+                <p>Expert diabetes care and nutrition guidance rooted in the Colorado spirit. Let's work together to help you thrive.</p>
+                <a href="#contact" class="btn btn-primary">Book a Consultation</a>
+                <a href="#services" class="btn btn-secondary">Learn More</a>
+            </div>
+            <div class="hero-image">
+                <div class="photo-frame">
+                    <img src="maggie.jpg" alt="Maggie Chamberlain, MS, RD, CDCES">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2>How I Can Help</h2>
+                <p>Comprehensive diabetes care and nutrition services tailored to your unique needs</p>
+            </div>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">&#x1F489;</div>
+                    <h3>Diabetes Education</h3>
+                    <p>Personalized diabetes management strategies for Type 1 and Type 2 diabetes.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">&#x1F957;</div>
+                    <h3>Nutrition Counseling</h3>
+                    <p>Evidence-based meal planning and nutrition guidance for optimal health.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">&#x1F3A4;</div>
+                    <h3>Speaking Engagements</h3>
+                    <p>Educational presentations for healthcare organizations and community groups.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">&#x2699;</div>
+                    <h3>Insulin Pump Training</h3>
+                    <p>Expert guidance on Tandem and bionic pancreas systems.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-image">
+                <div class="goat-frame">
+                    <img src="mountain-goats.jpg" alt="Colorado Mountain Goats">
+                </div>
+            </div>
+            <div class="about-content">
+                <h2>About Maggie</h2>
+                <p>With over 7 years of clinical experience in diabetes care and nutrition, I'm passionate about helping people live their best lives despite diabetes. My journey has taken me from hospital settings to cutting-edge medical device companies, always with the goal of improving patient outcomes.</p>
+                <p>Based in beautiful Colorado, I bring the same determination you'd find in our mountain goats to every client relationship. Whether you're newly diagnosed or looking to optimize your current management, I'm here to guide you every step of the way.</p>
+                <div class="credentials-list">
+                    <span class="credential-badge">Master of Science</span>
+                    <span class="credential-badge">Registered Dietitian</span>
+                    <span class="credential-badge">CDCES Certified</span>
+                    <span class="credential-badge">Louisiana Tech University</span>
+                    <span class="credential-badge">MSU Denver</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="blog" id="blog">
+        <div class="container">
+            <div class="section-header">
+                <h2>Latest Insights</h2>
+                <p>Tips, research, and stories to support your health journey</p>
+            </div>
+            <div class="blog-grid">
+                <article class="blog-card">
+                    <div class="image"></div>
+                    <div class="content">
+                        <span class="date">January 2026</span>
+                        <h3>Understanding Continuous Glucose Monitors</h3>
+                        <p>A comprehensive guide to CGM technology and how it can transform your diabetes management.</p>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <div class="image"></div>
+                    <div class="content">
+                        <span class="date">December 2025</span>
+                        <h3>Nutrition Tips for the Holiday Season</h3>
+                        <p>How to enjoy festive meals while keeping your blood sugar in check.</p>
+                    </div>
+                </article>
+                <article class="blog-card">
+                    <div class="image"></div>
+                    <div class="content">
+                        <span class="date">November 2025</span>
+                        <h3>The Bionic Pancreas Revolution</h3>
+                        <p>What you need to know about the latest advances in automated insulin delivery.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" id="contact">
+        <h2>Ready to Take Control?</h2>
+        <p>Schedule a consultation and let's create a personalized plan for your health journey.</p>
+        <a href="#" class="btn">Book Your Consultation</a>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="brand">
+                    <h3>Maggie Chamberlain</h3>
+                    <p>Registered Dietitian & Certified Diabetes Care and Education Specialist serving Colorado and beyond.</p>
+                </div>
+                <div>
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#">Diabetes Education</a></li>
+                        <li><a href="#">Nutrition Counseling</a></li>
+                        <li><a href="#">Insulin Pump Training</a></li>
+                        <li><a href="#">Speaking Engagements</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">Email</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="copyright">&copy; 2026 Maggie Chamberlain, MS, RD, CDCES. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
