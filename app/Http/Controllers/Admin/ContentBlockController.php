@@ -16,6 +16,13 @@ class ContentBlockController extends Controller
         return response()->json($blocks);
     }
 
+    public function publicIndex(): JsonResponse
+    {
+        return response()->json(
+            ContentBlock::pluck('content', 'key')->toArray()
+        );
+    }
+
     public function bulkUpdate(Request $request): JsonResponse
     {
         $validated = $request->validate([

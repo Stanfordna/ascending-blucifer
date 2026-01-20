@@ -49,8 +49,8 @@ const routes = [
                 component: SettingsEditor,
             },
             {
-                path: 'content',
-                name: 'admin.content',
+                path: 'section-text',
+                name: 'admin.section-text',
                 component: ContentBlocksEditor,
             },
             {

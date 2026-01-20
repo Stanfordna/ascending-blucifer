@@ -10,25 +10,24 @@
             <!-- Content -->
             <div class="text-center lg:text-left">
                 <span class="font-script text-3xl text-terracotta block mb-2">
-                    Diabetes Care & Nutrition
+                    {{ content.getBlock('welcome_script', 'Diabetes Care & Nutrition') }}
                 </span>
                 <h1 class="text-5xl lg:text-6xl text-charcoal mb-6 leading-tight">
-                    Nourishing Your Journey
-                    <span class="block text-mountain-blue">to Wellness</span>
+                    {{ content.getBlock('welcome_title', 'Nourishing Your Journey') }}
+                    <span class="block text-mountain-blue">{{ content.getBlock('welcome_title_accent', 'to Wellness') }}</span>
                 </h1>
                 <p class="text-lg text-charcoal-light font-light mb-8 max-w-lg mx-auto lg:mx-0">
-                    Expert guidance in diabetes management and nutrition, rooted in the spirit
-                    of the Colorado mountains. Together, we'll find your path to thriving.
+                    {{ content.getBlock('welcome_description', "Expert guidance in diabetes management and nutrition, rooted in the spirit of the Colorado mountains. Together, we'll find your path to thriving.") }}
                 </p>
                 <div class="flex flex-wrap gap-6 justify-center lg:justify-start items-center">
                     <a href="#contact" class="btn btn-primary">
-                        Begin Your Journey
+                        {{ content.getBlock('welcome_cta_primary', 'Begin Your Journey') }}
                     </a>
                     <a
                         href="#services"
                         class="text-mountain-blue-dark font-semibold text-sm tracking-wide uppercase relative group"
                     >
-                        Explore Services
+                        {{ content.getBlock('welcome_cta_secondary', 'Explore Services') }}
                         <span class="inline-block ml-2 transition-transform group-hover:translate-x-1">&rarr;</span>
                         <span class="absolute bottom-0 left-0 w-full h-0.5 bg-gold scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
                     </a>
@@ -60,3 +59,8 @@
         </div>
     </section>
 </template>
+
+<script setup>
+import { useContentStore } from '@/stores/content';
+const content = useContentStore();
+</script>

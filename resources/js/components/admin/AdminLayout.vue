@@ -97,7 +97,7 @@ const pageTitle = computed(() => {
     const titles = {
         'admin.dashboard': 'Dashboard',
         'admin.settings': 'Site Settings',
-        'admin.content': 'Content Blocks',
+        'admin.section-text': 'Section Text',
         'admin.services': 'Services',
         'admin.credentials': 'Credentials',
         'admin.blog': 'Blog Posts',

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ContentBlocksSeeder::class,
             ServicesSeeder::class,
             CredentialsSeeder::class,
+            DemoDataSeeder::class,
         ]);
     }
 }

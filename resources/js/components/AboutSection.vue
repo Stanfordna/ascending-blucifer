@@ -29,17 +29,17 @@
 
             <!-- Content -->
             <div>
-                <span class="font-script text-3xl text-gold-light block mb-2">About Maggie</span>
-                <h2 class="text-4xl lg:text-5xl mb-8">A Colorado Heart, A Healing Mission</h2>
+                <span class="font-script text-3xl text-gold-light block mb-2">
+                    {{ content.getBlock('about_script', 'About Maggie') }}
+                </span>
+                <h2 class="text-4xl lg:text-5xl mb-8">
+                    {{ content.getBlock('about_title', 'A Colorado Heart, A Healing Mission') }}
+                </h2>
                 <p class="font-light opacity-90 mb-6 leading-relaxed">
-                    With the determination of Colorado's mountain goats and over seven years of clinical
-                    experience, I've dedicated my career to helping people with diabetes discover what's
-                    possible for their health.
+                    {{ content.getBlock('about_paragraph_1', "With the determination of Colorado's mountain goats and over seven years of clinical experience, I've dedicated my career to helping people with diabetes discover what's possible for their health.") }}
                 </p>
                 <p class="font-light opacity-90 mb-8 leading-relaxed">
-                    From hospital bedside to cutting-edge medical device innovation with Beta Bionics and
-                    Tandem Diabetes Care, my journey has always been guided by one mission: empowering
-                    individuals to take control of their health with confidence and joy.
+                    {{ content.getBlock('about_paragraph_2', 'From hospital bedside to cutting-edge medical device innovation with Beta Bionics and Tandem Diabetes Care, my journey has always been guided by one mission: empowering individuals to take control of their health with confidence and joy.') }}
                 </p>
 
                 <!-- Credentials -->
@@ -58,6 +58,10 @@
 </template>
 
 <script setup>
+import { useContentStore } from '@/stores/content';
+
+const content = useContentStore();
+
 const credentials = [
     'Master of Science',
     'Registered Dietitian',

@@ -9,8 +9,7 @@
                         Maggie <span class="font-script text-gold">Chamberlain</span>
                     </h3>
                     <p class="text-white/60 font-light text-sm leading-relaxed">
-                        Registered Dietitian & Certified Diabetes Care and Education Specialist,
-                        helping people thrive from the heart of Colorado.
+                        {{ content.getBlock('footer_tagline', 'Registered Dietitian & Certified Diabetes Care and Education Specialist, helping people thrive from the heart of Colorado.') }}
                     </p>
                 </div>
 
@@ -70,7 +69,9 @@
 
 <script setup>
 import { computed } from 'vue';
+import { useContentStore } from '@/stores/content';
 
+const content = useContentStore();
 const currentYear = computed(() => new Date().getFullYear());
 
 const servicesLinks = [

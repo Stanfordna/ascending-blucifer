@@ -31,26 +31,39 @@
             </router-link>
         </nav>
 
-        <!-- Collapse Toggle -->
-        <button
+        <!-- Hover zone for toggle (right edge) -->
+        <div
+            class="absolute right-0 top-0 h-full w-3 cursor-pointer group"
             @click="$emit('toggle')"
-            class="absolute bottom-4 right-0 translate-x-1/2 w-6 h-6 bg-charcoal border border-white/20 rounded-full flex items-center justify-center hover:bg-charcoal-light transition-colors hidden lg:flex"
+            @mouseenter="hoverActive = true"
+            @mouseleave="hoverActive = false"
         >
-            <svg
-                class="w-3 h-3 text-white/70 transition-transform"
-                :class="collapsed ? 'rotate-180' : ''"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-        </button>
+            <!-- Visual indicator - subtle gradient showing interactive edge -->
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/5 group-hover:to-white/10 transition-colors"></div>
+
+            <!-- Chevron overlay (appears on hover) -->
+            <Transition name="chevron">
+                <div
+                    v-if="hoverActive"
+                    class="absolute top-1/2 -translate-y-1/2 -right-3 w-6 h-12 bg-charcoal-light rounded-r-lg flex items-center justify-center shadow-lg border-r border-y border-white/10"
+                >
+                    <svg
+                        class="w-4 h-4 text-white/80 transition-transform"
+                        :class="collapsed ? 'rotate-180' : ''"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </div>
+            </Transition>
+        </div>
     </aside>
 </template>
 
 <script setup>
-import { h } from 'vue';
+import { h, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 defineProps({
@@ -60,6 +73,7 @@ defineProps({
 defineEmits(['toggle']);
 
 const route = useRoute();
+const hoverActive = ref(false);
 
 // Icon components
 const DashboardIcon = {
@@ -120,7 +134,7 @@ const BookingsIcon = {
 const navItems = [
     { to: '/admin/dashboard', label: 'Dashboard', icon: DashboardIcon },
     { to: '/admin/settings', label: 'Site Settings', icon: SettingsIcon },
-    { to: '/admin/content', label: 'Content Blocks', icon: ContentIcon },
+    { to: '/admin/section-text', label: 'Section Text', icon: ContentIcon },
     { to: '/admin/services', label: 'Services', icon: ServicesIcon },
     { to: '/admin/credentials', label: 'Credentials', icon: CredentialsIcon },
     { to: '/admin/blog', label: 'Blog Posts', icon: BlogIcon },
@@ -133,3 +147,22 @@ function isActive(path) {
     return route.path.startsWith(path);
 }
 </script>
+
+<style scoped>
+.chevron-enter-active,
+.chevron-leave-active {
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.chevron-enter-from,
+.chevron-leave-to {
+    opacity: 0;
+    transform: translate(4px, -50%);
+}
+
+.chevron-enter-to,
+.chevron-leave-from {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+</style>
