@@ -1,6 +1,6 @@
 <template>
     <aside
-        class="fixed left-0 top-0 h-screen bg-charcoal text-white transition-all duration-300 z-20 overflow-visible"
+        class="admin-sidebar fixed left-0 top-0 h-screen bg-charcoal text-white transition-all duration-300 z-20 overflow-visible flex flex-col"
         :class="collapsed ? 'w-16' : 'w-64'"
     >
         <!-- Logo & Toggle -->
@@ -32,7 +32,7 @@
         </div>
 
         <!-- Navigation -->
-        <nav class="p-3 space-y-1">
+        <nav class="flex-1 p-3 space-y-1">
             <router-link
                 v-for="item in navItems"
                 :key="item.to"
@@ -48,12 +48,31 @@
                 <span v-if="!collapsed" class="text-sm whitespace-nowrap">{{ item.label }}</span>
             </router-link>
         </nav>
+
+        <!-- Dark Mode Toggle -->
+        <div class="p-3 border-t border-white/10">
+            <button
+                @click="toggleDarkMode"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-white/70 hover:bg-white/10 hover:text-white w-full cursor-pointer"
+            >
+                <!-- Sun icon (shown in dark mode) -->
+                <svg v-if="isDark" class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <!-- Moon icon (shown in light mode) -->
+                <svg v-else class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+                <span v-if="!collapsed" class="text-sm whitespace-nowrap">{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span>
+            </button>
+        </div>
     </aside>
 </template>
 
 <script setup>
 import { h } from 'vue';
 import { useRoute } from 'vue-router';
+import { useAdminTheme } from '@/stores/adminTheme';
 
 defineProps({
     collapsed: Boolean,
@@ -62,6 +81,7 @@ defineProps({
 defineEmits(['toggle']);
 
 const route = useRoute();
+const { isDark, toggle: toggleDarkMode } = useAdminTheme();
 
 // Icon components
 const DashboardIcon = {

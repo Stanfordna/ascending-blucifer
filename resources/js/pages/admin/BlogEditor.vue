@@ -33,6 +33,19 @@
 
                     <!-- Content -->
                     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <div class="flex items-center justify-between px-4 py-2 border-b border-gray-200">
+                            <label class="text-sm font-medium text-charcoal">Content</label>
+                            <button
+                                type="button"
+                                @click="openExpandedEditor"
+                                class="inline-flex items-center gap-2 px-4 py-1.5 bg-mountain-blue text-white text-sm font-medium rounded-lg hover:bg-mountain-blue-dark transition-colors cursor-pointer"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                                </svg>
+                                Full Screen Editor
+                            </button>
+                        </div>
                         <MdEditor
                             v-model="form.content"
                             language="en-US"
@@ -198,11 +211,76 @@
                 </div>
             </div>
         </form>
+
+        <!-- Fullscreen Editor Modal -->
+        <Teleport to="body">
+            <Transition name="modal-fade">
+                <div
+                    v-if="editorExpanded"
+                    class="fixed inset-0 z-50 flex items-center justify-center"
+                >
+                    <div class="absolute inset-0 bg-black/60" @click="editorExpanded = false"></div>
+
+                    <div
+                        class="relative bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden"
+                        :style="{ width: editorWidth + 'px', height: editorHeight + 'px' }"
+                    >
+                        <!-- Header -->
+                        <div class="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-gray-50 shrink-0">
+                            <h3 class="font-medium text-charcoal truncate">{{ form.title || 'Post Content' }}</h3>
+                            <button
+                                type="button"
+                                @click="editorExpanded = false"
+                                class="p-1.5 hover:bg-gray-200 rounded transition-colors cursor-pointer"
+                            >
+                                <svg class="w-5 h-5 text-charcoal-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Editor -->
+                        <div class="flex-1 min-h-0">
+                            <MdEditor
+                                v-model="form.content"
+                                language="en-US"
+                                :toolbars="editorToolbars"
+                                :preview="true"
+                                :footers="[]"
+                                placeholder="Write your post content here..."
+                                :style="{ height: modalEditorHeight }"
+                                no-upload-img
+                            />
+                        </div>
+
+                        <!-- Resize handles — edges (invisible) -->
+                        <div @mousedown="startResize($event, 'n')" class="absolute top-0 left-3 right-3 h-1.5 cursor-ns-resize z-10"></div>
+                        <div @mousedown="startResize($event, 's')" class="absolute bottom-0 left-3 right-3 h-1.5 cursor-ns-resize z-10"></div>
+                        <div @mousedown="startResize($event, 'w')" class="absolute left-0 top-3 bottom-3 w-1.5 cursor-ew-resize z-10"></div>
+                        <div @mousedown="startResize($event, 'e')" class="absolute right-0 top-3 bottom-3 w-1.5 cursor-ew-resize z-10"></div>
+
+                        <!-- Resize handles — corners (invisible) -->
+                        <div @mousedown="startResize($event, 'nw')" class="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize z-20"></div>
+                        <div @mousedown="startResize($event, 'ne')" class="absolute top-0 right-0 w-3 h-3 cursor-nesw-resize z-20"></div>
+                        <div @mousedown="startResize($event, 'sw')" class="absolute bottom-0 left-0 w-3 h-3 cursor-nesw-resize z-20"></div>
+
+                        <!-- Bottom-right corner — visible handle -->
+                        <div @mousedown="startResize($event, 'se')" class="absolute bottom-0 right-0 w-5 h-5 cursor-nwse-resize z-20 flex items-end justify-end pr-1 pb-1">
+                            <svg class="w-3 h-3 text-gray-400" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <line x1="11" y1="3" x2="3" y2="11" />
+                                <line x1="11" y1="7" x2="7" y2="11" />
+                                <line x1="11" y1="11" x2="10" y2="11" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </Transition>
+        </Teleport>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { MdEditor } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
@@ -225,6 +303,71 @@ const toast = useToast();
 
 const loading = ref(false);
 const saving = ref(false);
+
+// Fullscreen editor
+const editorExpanded = ref(false);
+const editorWidth = ref(0);
+const editorHeight = ref(0);
+const modalEditorHeight = computed(() => `${editorHeight.value - 52}px`);
+
+let resizeState = null;
+
+function openExpandedEditor() {
+    editorWidth.value = Math.min(window.innerWidth * 0.85, 1400);
+    editorHeight.value = Math.min(window.innerHeight * 0.85, 900);
+    editorExpanded.value = true;
+}
+
+watch(editorExpanded, (open) => {
+    document.body.style.overflow = open ? 'hidden' : '';
+});
+
+const RESIZE_CURSORS = { n: 'ns-resize', s: 'ns-resize', e: 'ew-resize', w: 'ew-resize', nw: 'nwse-resize', ne: 'nesw-resize', sw: 'nesw-resize', se: 'nwse-resize' };
+
+function startResize(e, direction) {
+    e.preventDefault();
+    resizeState = {
+        startX: e.clientX,
+        startY: e.clientY,
+        startWidth: editorWidth.value,
+        startHeight: editorHeight.value,
+        direction,
+    };
+    document.addEventListener('mousemove', onResize);
+    document.addEventListener('mouseup', stopResize);
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = RESIZE_CURSORS[direction];
+}
+
+function onResize(e) {
+    if (!resizeState) return;
+    const dx = e.clientX - resizeState.startX;
+    const dy = e.clientY - resizeState.startY;
+    const dir = resizeState.direction;
+    const minW = 600, minH = 400;
+    const maxW = window.innerWidth - 40;
+    const maxH = window.innerHeight - 40;
+
+    let newW = resizeState.startWidth;
+    let newH = resizeState.startHeight;
+
+    // Symmetric: each pixel of edge drag = 2px of size change (center stays fixed)
+    if (dir.includes('e')) newW = resizeState.startWidth + dx * 2;
+    if (dir.includes('w')) newW = resizeState.startWidth - dx * 2;
+    if (dir.includes('s')) newH = resizeState.startHeight + dy * 2;
+    if (dir.includes('n')) newH = resizeState.startHeight - dy * 2;
+
+    editorWidth.value = Math.max(minW, Math.min(maxW, newW));
+    editorHeight.value = Math.max(minH, Math.min(maxH, newH));
+}
+
+function stopResize() {
+    resizeState = null;
+    document.removeEventListener('mousemove', onResize);
+    document.removeEventListener('mouseup', stopResize);
+    document.body.style.userSelect = '';
+    document.body.style.cursor = '';
+}
 
 const form = ref({
     title: '',
@@ -326,4 +469,20 @@ async function savePost(asDraft = false) {
 onMounted(() => {
     fetchPost();
 });
+
+onUnmounted(() => {
+    stopResize();
+    document.body.style.overflow = '';
+});
 </script>
+
+<style scoped>
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+    transition: opacity 0.2s ease;
+}
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+    opacity: 0;
+}
+</style>
