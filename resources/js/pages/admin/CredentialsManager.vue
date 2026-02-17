@@ -2,10 +2,25 @@
     <div>
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
-            <p class="text-charcoal-light">Manage your professional credentials and certifications.</p>
-            <button @click="openModal()" class="btn btn-primary">
-                Add Credential
-            </button>
+            <div>
+                <p class="text-charcoal-light">Manage your professional credentials and certifications.</p>
+                <span v-if="credentials.length > 1" class="text-xs text-charcoal-light">Drag to reorder</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <a
+                    href="/#about"
+                    target="_blank"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-charcoal-light border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-charcoal transition-colors"
+                >
+                    Go to Section
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                </a>
+                <button @click="openModal()" class="btn btn-primary">
+                    Add Credential
+                </button>
+            </div>
         </div>
 
         <!-- Loading -->
@@ -14,79 +29,63 @@
         </div>
 
         <!-- Credentials List -->
-        <div v-else class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-            <table class="w-full">
-                <thead class="bg-gray-50 border-b border-gray-200">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-charcoal-light uppercase tracking-wider w-16">Order</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-charcoal-light uppercase tracking-wider">Credential</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-charcoal-light uppercase tracking-wider">Institution</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-charcoal-light uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-charcoal-light uppercase tracking-wider w-32">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    <tr
-                        v-for="(credential, index) in credentials"
-                        :key="credential.id"
-                        class="hover:bg-gray-50 transition-colors"
-                    >
-                        <td class="px-6 py-4">
-                            <div class="flex flex-col gap-1">
-                                <button
-                                    v-if="index > 0"
-                                    @click="moveCredential(index, -1)"
-                                    class="p-1 hover:bg-gray-200 rounded transition-colors"
-                                >
-                                    <svg class="w-4 h-4 text-charcoal-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-                                    </svg>
-                                </button>
-                                <button
-                                    v-if="index < credentials.length - 1"
-                                    @click="moveCredential(index, 1)"
-                                    class="p-1 hover:bg-gray-200 rounded transition-colors"
-                                >
-                                    <svg class="w-4 h-4 text-charcoal-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div>
-                                <p class="font-medium text-charcoal">{{ credential.name }}</p>
-                                <p v-if="credential.abbreviation" class="text-sm text-charcoal-light">{{ credential.abbreviation }}</p>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-charcoal-light">
-                            {{ credential.institution || '—' }}
-                        </td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                :class="credential.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'"
-                            >
-                                {{ credential.is_active ? 'Active' : 'Inactive' }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <button
-                                @click="openModal(credential)"
-                                class="text-mountain-blue hover:text-mountain-blue-dark mr-3"
-                            >
-                                Edit
-                            </button>
-                            <button
-                                @click="confirmDelete(credential)"
-                                class="text-terracotta hover:text-terracotta/80"
-                            >
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div
+            v-else-if="credentials.length"
+            class="grid gap-3"
+            @dragover.prevent
+            @drop="handleDrop"
+        >
+            <div
+                v-for="(credential, index) in credentials"
+                :key="credential.id"
+                :draggable="true"
+                @dragstart="handleDragStart($event, index)"
+                @dragover.prevent="handleDragOver($event, index)"
+                @dragend="handleDragEnd"
+                class="flex items-center gap-4 p-4 bg-white rounded-lg border cursor-move hover:shadow-sm transition-all"
+                :class="{
+                    'ring-2 ring-[var(--brand-primary)] bg-[var(--brand-primary)]/5': dragOverIndex === index,
+                    'opacity-50': dragIndex === index
+                }"
+            >
+                <!-- Drag handle -->
+                <div class="text-gray-400 flex-shrink-0">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z"/>
+                    </svg>
+                </div>
+
+                <!-- Content -->
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                        <p class="font-medium text-charcoal">{{ credential.name }}</p>
+                        <span v-if="credential.abbreviation" class="text-sm text-charcoal-light">({{ credential.abbreviation }})</span>
+                    </div>
+                    <p v-if="credential.institution" class="text-sm text-charcoal-light">{{ credential.institution }}</p>
+                </div>
+
+                <!-- Status -->
+                <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium flex-shrink-0"
+                    :class="credential.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'"
+                >
+                    {{ credential.is_active ? 'Active' : 'Inactive' }}
+                </span>
+
+                <!-- Actions -->
+                <ActionButtons
+                    @edit="openModal(credential)"
+                    @delete="confirmDelete(credential)"
+                />
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div v-else class="bg-white rounded-lg border border-gray-200 p-12 text-center">
+            <p class="text-charcoal-light mb-4">No credentials yet.</p>
+            <button @click="openModal()" class="btn btn-primary">
+                Add your first credential
+            </button>
         </div>
 
         <!-- Edit Modal -->
@@ -175,6 +174,7 @@ import api from '@/services/api';
 import { useToast } from '@/stores/toast';
 import Modal from '@/components/ui/Modal.vue';
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue';
+import ActionButtons from '@/components/admin/ActionButtons.vue';
 
 const toast = useToast();
 const loading = ref(true);
@@ -185,6 +185,10 @@ const modalOpen = ref(false);
 const deleteDialogOpen = ref(false);
 const editingCredential = ref(null);
 const deletingCredential = ref(null);
+
+// Drag and drop state
+const dragIndex = ref(null);
+const dragOverIndex = ref(null);
 
 const form = ref({
     name: '',
@@ -215,6 +219,50 @@ function openModal(credential = null) {
 function confirmDelete(credential) {
     deletingCredential.value = credential;
     deleteDialogOpen.value = true;
+}
+
+// Drag and drop handlers
+function handleDragStart(e, index) {
+    dragIndex.value = index;
+    e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragOver(e, index) {
+    e.preventDefault();
+    dragOverIndex.value = index;
+}
+
+function handleDragEnd() {
+    dragOverIndex.value = null;
+}
+
+async function handleDrop() {
+    if (dragIndex.value === null || dragOverIndex.value === null) return;
+    if (dragIndex.value === dragOverIndex.value) {
+        dragIndex.value = null;
+        dragOverIndex.value = null;
+        return;
+    }
+
+    // Reorder the array
+    const items = [...credentials.value];
+    const [movedItem] = items.splice(dragIndex.value, 1);
+    items.splice(dragOverIndex.value, 0, movedItem);
+    credentials.value = items;
+
+    dragIndex.value = null;
+    dragOverIndex.value = null;
+
+    // Save the new order to the server
+    try {
+        await api.post('/admin/credentials/reorder', {
+            ids: credentials.value.map(c => c.id),
+        });
+        toast.success('Order updated');
+    } catch (e) {
+        toast.error('Failed to update order');
+        fetchCredentials();
+    }
 }
 
 async function fetchCredentials() {
@@ -260,21 +308,6 @@ async function deleteCredential() {
         toast.error('Failed to delete credential');
     } finally {
         deleting.value = false;
-    }
-}
-
-async function moveCredential(index, direction) {
-    const newIndex = index + direction;
-    const [credential] = credentials.value.splice(index, 1);
-    credentials.value.splice(newIndex, 0, credential);
-
-    try {
-        await api.post('/admin/credentials/reorder', {
-            ids: credentials.value.map(c => c.id),
-        });
-    } catch (e) {
-        toast.error('Failed to update order');
-        fetchCredentials();
     }
 }
 

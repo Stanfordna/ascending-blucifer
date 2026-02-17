@@ -1,16 +1,34 @@
 <template>
     <aside
-        class="fixed left-0 top-0 h-screen bg-charcoal text-white transition-all duration-300 z-20"
+        class="fixed left-0 top-0 h-screen bg-charcoal text-white transition-all duration-300 z-20 overflow-visible"
         :class="collapsed ? 'w-16' : 'w-64'"
     >
-        <!-- Logo -->
-        <div class="h-16 flex items-center px-4 border-b border-white/10">
+        <!-- Logo & Toggle -->
+        <div class="h-16 flex items-center px-3 border-b border-white/10 relative">
             <router-link to="/admin/dashboard" class="flex items-center gap-3 overflow-hidden">
                 <div class="w-8 h-8 bg-gold rounded flex items-center justify-center flex-shrink-0">
                     <span class="font-script text-charcoal text-lg">M</span>
                 </div>
                 <span v-if="!collapsed" class="font-serif text-lg whitespace-nowrap">Admin</span>
             </router-link>
+
+            <!-- Toggle button - positioned at right edge, can extend past sidebar -->
+            <button
+                @click="$emit('toggle')"
+                class="absolute top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded bg-charcoal hover:bg-charcoal-light transition-colors border border-white/10"
+                :class="collapsed ? 'right-0 translate-x-1/2' : 'right-3'"
+                :title="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+            >
+                <svg
+                    class="w-4 h-4 text-white/70 transition-transform duration-300"
+                    :class="collapsed ? 'rotate-180' : ''"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                </svg>
+            </button>
         </div>
 
         <!-- Navigation -->
@@ -30,40 +48,11 @@
                 <span v-if="!collapsed" class="text-sm whitespace-nowrap">{{ item.label }}</span>
             </router-link>
         </nav>
-
-        <!-- Hover zone for toggle (right edge) -->
-        <div
-            class="absolute right-0 top-0 h-full w-3 cursor-pointer group"
-            @click="$emit('toggle')"
-            @mouseenter="hoverActive = true"
-            @mouseleave="hoverActive = false"
-        >
-            <!-- Visual indicator - subtle gradient showing interactive edge -->
-            <div class="absolute inset-0 bg-gradient-to-r from-transparent to-white/5 group-hover:to-white/10 transition-colors"></div>
-
-            <!-- Chevron overlay (appears on hover) -->
-            <Transition name="chevron">
-                <div
-                    v-if="hoverActive"
-                    class="absolute top-1/2 -translate-y-1/2 -right-3 w-6 h-12 bg-charcoal-light rounded-r-lg flex items-center justify-center shadow-lg border-r border-y border-white/10"
-                >
-                    <svg
-                        class="w-4 h-4 text-white/80 transition-transform"
-                        :class="collapsed ? 'rotate-180' : ''"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
-                </div>
-            </Transition>
-        </div>
     </aside>
 </template>
 
 <script setup>
-import { h, ref } from 'vue';
+import { h } from 'vue';
 import { useRoute } from 'vue-router';
 
 defineProps({
@@ -73,7 +62,6 @@ defineProps({
 defineEmits(['toggle']);
 
 const route = useRoute();
-const hoverActive = ref(false);
 
 // Icon components
 const DashboardIcon = {
@@ -147,22 +135,3 @@ function isActive(path) {
     return route.path.startsWith(path);
 }
 </script>
-
-<style scoped>
-.chevron-enter-active,
-.chevron-leave-active {
-    transition: opacity 0.15s ease, transform 0.15s ease;
-}
-
-.chevron-enter-from,
-.chevron-leave-to {
-    opacity: 0;
-    transform: translate(4px, -50%);
-}
-
-.chevron-enter-to,
-.chevron-leave-from {
-    opacity: 1;
-    transform: translate(0, -50%);
-}
-</style>

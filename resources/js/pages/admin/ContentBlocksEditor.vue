@@ -23,14 +23,27 @@
                         <h2 class="text-xl font-semibold text-charcoal">
                             {{ sectionDisplayNames[activeSection] || activeSection }}
                         </h2>
-                        <button
-                            type="submit"
-                            class="btn btn-primary"
-                            :disabled="saving"
-                        >
-                            <span v-if="saving">Saving...</span>
-                            <span v-else>Save Changes</span>
-                        </button>
+                        <div class="flex items-center gap-3">
+                            <a
+                                v-if="sectionAnchors[activeSection]"
+                                :href="sectionAnchors[activeSection]"
+                                target="_blank"
+                                class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-charcoal-light border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-charcoal transition-colors"
+                            >
+                                Go to Section
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                </svg>
+                            </a>
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                                :disabled="saving"
+                            >
+                                <span v-if="saving">Saving...</span>
+                                <span v-else>Save Changes</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Content Blocks for Active Section -->
@@ -87,6 +100,15 @@ const sectionDisplayNames = {
     blog: 'Blog',
     contact: 'Contact Prompt',
     footer: 'Footer',
+};
+
+const sectionAnchors = {
+    welcome: '/#welcome',
+    services: '/#services',
+    about: '/#about',
+    blog: '/#blog',
+    contact: '/#contact',
+    footer: '/#footer',
 };
 
 const sectionOrder = ['welcome', 'services', 'about', 'blog', 'contact', 'footer'];

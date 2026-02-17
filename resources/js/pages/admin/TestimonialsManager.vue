@@ -3,9 +3,21 @@
         <!-- Header -->
         <div class="flex items-center justify-between mb-6">
             <p class="text-charcoal-light">Manage client testimonials displayed on your website.</p>
-            <button @click="openModal()" class="btn btn-primary">
-                Add Testimonial
-            </button>
+            <div class="flex items-center gap-3">
+                <a
+                    href="/#testimonials"
+                    target="_blank"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-charcoal-light border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-charcoal transition-colors"
+                >
+                    Go to Section
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                </a>
+                <button @click="openModal()" class="btn btn-primary">
+                    Add Testimonial
+                </button>
+            </div>
         </div>
 
         <!-- Loading -->
@@ -137,6 +149,16 @@
                         <span class="text-sm text-charcoal">Featured</span>
                     </label>
                 </div>
+
+                <!-- Color Overrides -->
+                <div class="border-t border-gray-200 pt-4 mt-4">
+                    <h4 class="text-sm font-medium text-charcoal mb-3">Color Overrides (optional)</h4>
+                    <div class="grid grid-cols-3 gap-3">
+                        <ColorPicker v-model="form.color_primary" label="Primary" />
+                        <ColorPicker v-model="form.color_secondary" label="Secondary" />
+                        <ColorPicker v-model="form.color_accent" label="Accent" />
+                    </div>
+                </div>
             </form>
 
             <template #footer>
@@ -176,6 +198,7 @@ import api from '@/services/api';
 import { useToast } from '@/stores/toast';
 import Modal from '@/components/ui/Modal.vue';
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue';
+import ColorPicker from '@/components/admin/ColorPicker.vue';
 
 const toast = useToast();
 const loading = ref(true);
@@ -193,6 +216,9 @@ const form = ref({
     quote: '',
     is_active: true,
     is_featured: false,
+    color_primary: '',
+    color_secondary: '',
+    color_accent: '',
 });
 
 function resetForm() {
@@ -202,6 +228,9 @@ function resetForm() {
         quote: '',
         is_active: true,
         is_featured: false,
+        color_primary: '',
+        color_secondary: '',
+        color_accent: '',
     };
 }
 

@@ -55,6 +55,13 @@
                                     <p class="text-sm font-medium text-charcoal">{{ auth.user?.name }}</p>
                                     <p class="text-xs text-charcoal-light">{{ auth.user?.email }}</p>
                                 </div>
+                                <router-link
+                                    to="/admin/settings"
+                                    @click="userMenuOpen = false"
+                                    class="block px-4 py-2 text-sm text-charcoal-light hover:bg-gray-50 hover:text-charcoal transition-colors"
+                                >
+                                    Site Settings
+                                </router-link>
                                 <button
                                     @click="handleLogout"
                                     class="w-full text-left px-4 py-2 text-sm text-charcoal-light hover:bg-gray-50 hover:text-terracotta transition-colors"
@@ -82,12 +89,16 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import { useSettingsStore } from '@/stores/settings';
+import { useToast } from '@/stores/toast';
 import AdminSidebar from './AdminSidebar.vue';
 import ToastContainer from '@/components/ui/ToastContainer.vue';
 
 const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
+const settingsStore = useSettingsStore();
+const toast = useToast();
 
 const sidebarCollapsed = ref(false);
 const userMenuOpen = ref(false);
@@ -117,7 +128,7 @@ const userInitials = computed(() => {
 
 async function handleLogout() {
     await auth.logout();
-    router.push('/login');
+    window.location.href = '/login';
 }
 
 function handleClickOutside(event) {
@@ -128,6 +139,7 @@ function handleClickOutside(event) {
 
 onMounted(() => {
     document.addEventListener('click', handleClickOutside);
+    settingsStore.initColors();
 });
 
 onUnmounted(() => {
