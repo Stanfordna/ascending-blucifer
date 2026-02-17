@@ -16,7 +16,7 @@
 
         <!-- Contact Form or Mailto Button -->
         <ContactForm v-if="formEnabled" />
-        <a v-else :href="mailtoLink" class="btn btn-white">
+        <a v-else :href="mailtoLink" class="btn btn-lg btn-white">
             {{ content.getBlock('contact_button', 'Schedule Your Consultation') }}
         </a>
     </section>

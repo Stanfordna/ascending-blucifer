@@ -7,7 +7,7 @@
                 <a
                     href="/#testimonials"
                     target="_blank"
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-charcoal-light border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-charcoal transition-colors"
+                    class="btn btn-outline"
                 >
                     Go to Section
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,7 +155,7 @@
                 <div class="flex justify-end gap-3">
                     <button
                         @click="modalOpen = false"
-                        class="px-4 py-2 text-sm font-medium text-charcoal-light hover:text-charcoal border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        class="btn btn-ghost"
                     >
                         Cancel
                     </button>

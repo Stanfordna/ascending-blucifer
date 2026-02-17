@@ -43,7 +43,7 @@
                 <button
                     type="button"
                     @click="configModalOpen = true"
-                    class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    class="btn btn-outline"
                 >
                     Configure Form
                 </button>
@@ -52,7 +52,7 @@
                 <button
                     type="button"
                     @click="emailModalOpen = true"
-                    class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    class="btn btn-outline"
                 >
                     Email Template
                 </button>
@@ -61,7 +61,7 @@
                 <button
                     type="button"
                     @click="promptsModalOpen = true"
-                    class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                    class="btn btn-outline"
                 >
                     Edit Contact Prompts
                 </button>
@@ -295,7 +295,7 @@
 
             <template #footer>
                 <div class="flex justify-end gap-3">
-                    <button @click="configModalOpen = false" class="px-4 py-2 text-sm font-medium text-charcoal-light hover:text-charcoal transition-colors">Cancel</button>
+                    <button @click="configModalOpen = false" class="btn btn-ghost">Cancel</button>
                     <button @click="saveFormConfig" class="btn btn-primary" :disabled="configSaving">
                         {{ configSaving ? 'Saving...' : 'Save' }}
                     </button>
@@ -328,7 +328,7 @@
 
             <template #footer>
                 <div class="flex justify-end gap-3">
-                    <button @click="emailModalOpen = false" class="px-4 py-2 text-sm font-medium text-charcoal-light hover:text-charcoal transition-colors">Cancel</button>
+                    <button @click="emailModalOpen = false" class="btn btn-ghost">Cancel</button>
                     <button @click="saveFormConfig" class="btn btn-primary" :disabled="configSaving">
                         {{ configSaving ? 'Saving...' : 'Save' }}
                     </button>

@@ -229,7 +229,7 @@
                 <div class="flex justify-end gap-3">
                     <button
                         @click="modalOpen = false"
-                        class="px-4 py-2 text-sm font-medium text-charcoal-light hover:text-charcoal border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        class="btn btn-ghost"
                     >
                         Cancel
                     </button>

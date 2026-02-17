@@ -85,23 +85,51 @@ select:not([multiple]):not([size]) {
 /* Component Styles */
 @layer components {
     .btn {
-        @apply inline-block px-8 py-4 font-semibold text-sm tracking-wider uppercase transition-all duration-300;
+        @apply inline-flex items-center justify-center gap-2 px-4 py-2 font-medium text-sm rounded-lg transition-all duration-200 cursor-pointer;
+    }
+
+    .btn-lg {
+        @apply px-8 py-4 font-semibold tracking-wider uppercase rounded-none;
     }
 
     .btn-primary {
-        @apply bg-terracotta text-white border-2 border-terracotta;
+        @apply bg-terracotta text-white border border-terracotta shadow-sm;
     }
 
     .btn-primary:hover {
-        @apply bg-terracotta-dark border-terracotta-dark;
+        @apply bg-terracotta-dark border-terracotta-dark shadow-md;
+    }
+
+    .btn-secondary {
+        @apply bg-mountain-blue text-white border border-mountain-blue shadow-sm;
+    }
+
+    .btn-secondary:hover {
+        @apply bg-mountain-blue-dark border-mountain-blue-dark shadow-md;
+    }
+
+    .btn-outline {
+        @apply bg-white text-charcoal-light border border-gray-300 shadow-sm;
+    }
+
+    .btn-outline:hover {
+        @apply bg-gray-50 text-charcoal border-gray-400;
+    }
+
+    .btn-ghost {
+        @apply text-charcoal-light border border-transparent;
+    }
+
+    .btn-ghost:hover {
+        @apply text-charcoal bg-gray-100;
     }
 
     .btn-white {
-        @apply bg-white text-terracotta border-none;
+        @apply bg-white text-terracotta border-none shadow-sm;
     }
 
     .btn-white:hover {
-        @apply bg-cream;
+        @apply bg-cream shadow-md;
     }
 
     .section-header {

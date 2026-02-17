@@ -20,7 +20,7 @@
                     {{ content.getBlock('welcome_description', "Expert guidance in diabetes management and nutrition, rooted in the spirit of the Colorado mountains. Together, we'll find your path to thriving.") }}
                 </p>
                 <div class="flex flex-wrap gap-6 justify-center lg:justify-start items-center">
-                    <a href="#contact" class="btn btn-primary">
+                    <a href="#contact" class="btn btn-lg btn-primary">
                         {{ content.getBlock('welcome_cta_primary', 'Begin Your Journey') }}
                     </a>
                     <a

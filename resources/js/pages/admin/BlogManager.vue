@@ -7,7 +7,7 @@
                 <a
                     href="/blog"
                     target="_blank"
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-charcoal-light border border-gray-300 rounded-lg hover:bg-gray-50 hover:text-charcoal transition-colors"
+                    class="btn btn-outline"
                 >
                     View Blog
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,7 +16,7 @@
                 </a>
                 <button
                     @click="showSeoTips = !showSeoTips"
-                    class="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg border transition-colors"
+                    class="btn border"
                     :class="showSeoTips ? 'bg-mountain-blue/10 border-mountain-blue text-mountain-blue' : 'border-gray-300 text-charcoal-light hover:text-charcoal hover:bg-gray-50'"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

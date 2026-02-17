@@ -75,14 +75,14 @@
                             type="button"
                             @click="revertColors"
                             :disabled="!colorsChanged"
-                            class="text-sm px-3 py-1.5 text-charcoal-light hover:text-charcoal disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            class="btn btn-ghost disabled:opacity-40"
                         >
                             Revert Changes
                         </button>
                         <button
                             type="button"
                             @click="restoreDefaultColors"
-                            class="text-sm px-3 py-1.5 text-mountain-blue hover:text-mountain-blue-dark transition-colors"
+                            class="btn btn-ghost text-mountain-blue hover:text-mountain-blue-dark"
                         >
                             Restore Defaults
                         </button>
