@@ -3,23 +3,29 @@
         <!-- Header with Filters & Controls -->
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-4">
-                <select
+                <SelectMenu
                     v-model="statusFilter"
-                    @change="fetchSubmissions"
-                    class="pl-4 pr-8 py-2 border border-gray-300 rounded-lg focus:border-mountain-blue focus:ring-1 focus:ring-mountain-blue outline-none"
-                >
-                    <option value="">All Messages</option>
-                    <option value="new">New</option>
-                    <option value="read">Read</option>
-                    <option value="responded">Responded</option>
-                    <option value="archived">Archived</option>
-                </select>
+                    @change="() => fetchSubmissions()"
+                    :options="[
+                        { value: '', label: 'All Messages' },
+                        { value: 'new', label: 'New' },
+                        { value: 'read', label: 'Read' },
+                        { value: 'responded', label: 'Responded' },
+                        { value: 'archived', label: 'Archived' },
+                    ]"
+                    placeholder="All Messages"
+                />
             </div>
 
             <div class="flex items-center gap-3">
                 <!-- Contact Form Toggle -->
                 <label class="flex items-center gap-2 cursor-pointer">
                     <span class="text-sm text-charcoal-light">Contact Form</span>
+                    <InfoTip title="Contact Form">
+                        <p>When <strong>enabled</strong>, a contact form appears on your site so visitors can send you a message directly.</p>
+                        <p>When <strong>disabled</strong>, visitors see a "Send Email" button instead, which opens their email app with a pre-filled template.</p>
+                        <p>Even with the form enabled, a "prefer email?" link is shown at the bottom so visitors can always choose to email you directly.</p>
+                    </InfoTip>
                     <button
                         type="button"
                         @click="toggleContactForm"
@@ -76,7 +82,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-charcoal-light uppercase tracking-wider">Message</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-charcoal-light uppercase tracking-wider w-28">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-charcoal-light uppercase tracking-wider w-36">Date</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-charcoal-light uppercase tracking-wider w-24">Actions</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-charcoal-light uppercase tracking-wider w-36"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -109,13 +115,12 @@
                         <td class="px-6 py-4 text-sm text-charcoal-light">
                             {{ formatDate(submission.created_at) }}
                         </td>
-                        <td class="px-6 py-4 text-right">
-                            <button
-                                @click.stop="viewSubmission(submission)"
-                                class="text-mountain-blue hover:text-mountain-blue-dark"
-                            >
-                                View
-                            </button>
+                        <td class="px-6 py-4">
+                            <ActionChips
+                                :actions="contactStatuses"
+                                :exclude="submission.status"
+                                @action="quickStatus(submission, $event)"
+                            />
                         </td>
                     </tr>
                 </tbody>
@@ -183,16 +188,16 @@
 
                 <div>
                     <label class="block text-xs font-medium text-charcoal-light mb-1">Status</label>
-                    <select
+                    <SelectMenu
                         v-model="selectedSubmission.status"
                         @change="updateStatus"
-                        class="pl-3 pr-8 py-2 border border-gray-300 rounded-lg focus:border-mountain-blue focus:ring-1 focus:ring-mountain-blue outline-none"
-                    >
-                        <option value="new">New</option>
-                        <option value="read">Read</option>
-                        <option value="responded">Responded</option>
-                        <option value="archived">Archived</option>
-                    </select>
+                        :options="[
+                            { value: 'new', label: 'New' },
+                            { value: 'read', label: 'Read' },
+                            { value: 'responded', label: 'Responded' },
+                            { value: 'archived', label: 'Archived' },
+                        ]"
+                    />
                 </div>
 
                 <div>
@@ -344,7 +349,10 @@ import { ref, reactive, onMounted } from 'vue';
 import api from '@/services/api';
 import { useToast } from '@/stores/toast';
 import Modal from '@/components/ui/Modal.vue';
+import SelectMenu from '@/components/ui/SelectMenu.vue';
 import ContactPromptsModal from '@/components/ContactPromptsModal.vue';
+import InfoTip from '@/components/ui/InfoTip.vue';
+import ActionChips from '@/components/admin/ActionChips.vue';
 
 const toast = useToast();
 const loading = ref(true);
@@ -362,6 +370,13 @@ const promptsModalOpen = ref(false);
 const configLoading = ref(false);
 const configSaving = ref(false);
 const formConfig = ref({});
+
+const contactStatuses = [
+    { key: 'new', tooltip: 'Set to New', color: '#C4785A', gradient: 'linear-gradient(135deg, #C4785A, #D99A7D)', paths: ['M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'] },
+    { key: 'read', tooltip: 'Mark as Read', color: '#6b7280', gradient: 'linear-gradient(135deg, #6b7280, #9ca3af)', paths: ['M15 12a3 3 0 11-6 0 3 3 0 016 0z', 'M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'] },
+    { key: 'responded', tooltip: 'Mark Responded', color: '#16a34a', gradient: 'linear-gradient(135deg, #16a34a, #22c55e)', paths: ['M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6'] },
+    { key: 'archived', tooltip: 'Archive', color: '#4A5E6A', gradient: 'linear-gradient(135deg, #4A5E6A, #6b7280)', paths: ['M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4'] },
+];
 
 const pagination = reactive({
     currentPage: 1,
@@ -445,6 +460,18 @@ async function updateStatus() {
         toast.success('Updated');
     } catch (e) {
         toast.error('Failed to update');
+    }
+}
+
+async function quickStatus(submission, status) {
+    const prev = submission.status;
+    submission.status = status;
+    try {
+        await api.patch(`/admin/contact-submissions/${submission.id}`, { status });
+        toast.success(`Marked as ${status}`);
+    } catch (e) {
+        submission.status = prev;
+        toast.error('Failed to update status');
     }
 }
 

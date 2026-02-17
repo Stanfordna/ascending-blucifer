@@ -3,17 +3,18 @@
         <!-- Header with Filters -->
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-4">
-                <select
+                <SelectMenu
                     v-model="statusFilter"
-                    @change="fetchBookings"
-                    class="pl-4 pr-8 py-2 border border-gray-300 rounded-lg focus:border-mountain-blue focus:ring-1 focus:ring-mountain-blue outline-none"
-                >
-                    <option value="">All Bookings</option>
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                </select>
+                    @change="() => fetchBookings()"
+                    :options="[
+                        { value: '', label: 'All Bookings' },
+                        { value: 'pending', label: 'Pending' },
+                        { value: 'confirmed', label: 'Confirmed' },
+                        { value: 'completed', label: 'Completed' },
+                        { value: 'cancelled', label: 'Cancelled' },
+                    ]"
+                    placeholder="All Bookings"
+                />
             </div>
 
             <div class="flex items-center gap-3">
@@ -48,15 +49,16 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-charcoal-light uppercase tracking-wider">Service</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-charcoal-light uppercase tracking-wider">Preferred Date</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-charcoal-light uppercase tracking-wider w-28">Status</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-charcoal-light uppercase tracking-wider w-32">Actions</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-charcoal-light uppercase tracking-wider w-36"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     <tr
                         v-for="booking in bookings"
                         :key="booking.id"
-                        class="hover:bg-gray-50 transition-colors"
+                        class="hover:bg-gray-50 transition-colors cursor-pointer"
                         :class="{ 'bg-gold/5': booking.status === 'pending' }"
+                        @click="viewBooking(booking)"
                     >
                         <td class="px-6 py-4">
                             <div>
@@ -90,13 +92,12 @@
                                 {{ booking.status }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-right">
-                            <button
-                                @click="viewBooking(booking)"
-                                class="text-mountain-blue hover:text-mountain-blue-dark"
-                            >
-                                View
-                            </button>
+                        <td class="px-6 py-4">
+                            <ActionChips
+                                :actions="bookingStatuses"
+                                :exclude="booking.status"
+                                @action="quickStatus(booking, $event)"
+                            />
                         </td>
                     </tr>
                 </tbody>
@@ -192,15 +193,15 @@
                 <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
                     <div>
                         <label class="block text-xs font-medium text-charcoal-light mb-1">Status</label>
-                        <select
+                        <SelectMenu
                             v-model="selectedBooking.status"
-                            class="w-full pl-3 pr-8 py-2 border border-gray-300 rounded-lg focus:border-mountain-blue focus:ring-1 focus:ring-mountain-blue outline-none"
-                        >
-                            <option value="pending">Pending</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
+                            :options="[
+                                { value: 'pending', label: 'Pending' },
+                                { value: 'confirmed', label: 'Confirmed' },
+                                { value: 'completed', label: 'Completed' },
+                                { value: 'cancelled', label: 'Cancelled' },
+                            ]"
+                        />
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-charcoal-light mb-1">Scheduled For</label>
@@ -250,6 +251,8 @@ import { ref, reactive, onMounted } from 'vue';
 import api from '@/services/api';
 import { useToast } from '@/stores/toast';
 import Modal from '@/components/ui/Modal.vue';
+import SelectMenu from '@/components/ui/SelectMenu.vue';
+import ActionChips from '@/components/admin/ActionChips.vue';
 
 const toast = useToast();
 const loading = ref(true);
@@ -267,6 +270,25 @@ const pagination = reactive({
     to: 0,
     total: 0,
 });
+
+const bookingStatuses = [
+    { key: 'pending', tooltip: 'Set to Pending', color: '#D4A84B', gradient: 'linear-gradient(135deg, #D4A84B, #E5C070)', paths: ['M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'] },
+    { key: 'confirmed', tooltip: 'Mark Confirmed', color: '#166534', gradient: 'linear-gradient(135deg, #16a34a, #22c55e)', paths: ['M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'] },
+    { key: 'completed', tooltip: 'Mark Completed', color: '#5B7FA4', gradient: 'linear-gradient(135deg, #5B7FA4, #7A9BB8)', paths: ['M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'] },
+    { key: 'cancelled', tooltip: 'Mark Cancelled', color: '#6b7280', gradient: 'linear-gradient(135deg, #6b7280, #9ca3af)', paths: ['M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z'] },
+];
+
+async function quickStatus(booking, status) {
+    const prev = booking.status;
+    booking.status = status;
+    try {
+        await api.patch(`/admin/booking-requests/${booking.id}`, { status });
+        toast.success(`Marked as ${status}`);
+    } catch (e) {
+        booking.status = prev;
+        toast.error('Failed to update status');
+    }
+}
 
 function statusClass(status) {
     const classes = {
