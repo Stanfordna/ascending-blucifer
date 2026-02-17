@@ -248,11 +248,9 @@
                                     {{ formatDate(post.published_at || post.created_at) }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <ActionButtons
-                                        :show-view="true"
-                                        :view-href="post.slug && post.published_at ? `/blog/${post.slug}` : `/blog/preview/${post.id}`"
-                                        :edit-href="`/admin/blog/${post.id}`"
-                                        @delete="confirmDelete(post)"
+                                    <ActionChips
+                                        :actions="blogActions(post)"
+                                        @action="$event === 'delete' && confirmDelete(post)"
                                     />
                                 </td>
                             </tr>
@@ -287,7 +285,7 @@ import { ref, computed, onMounted } from 'vue';
 import api from '@/services/api';
 import { useToast } from '@/stores/toast';
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue';
-import ActionButtons from '@/components/admin/ActionButtons.vue';
+import ActionChips, { CRUD_ACTIONS } from '@/components/admin/ActionChips.vue';
 
 const toast = useToast();
 const loading = ref(true);
@@ -331,6 +329,14 @@ function formatDate(date) {
         day: 'numeric',
         year: 'numeric',
     });
+}
+
+function blogActions(post) {
+    return [
+        { ...CRUD_ACTIONS.view, href: post.slug && post.published_at ? `/blog/${post.slug}` : `/blog/preview/${post.id}` },
+        { ...CRUD_ACTIONS.edit, to: `/admin/blog/${post.id}` },
+        CRUD_ACTIONS.delete,
+    ];
 }
 
 function confirmDelete(post) {

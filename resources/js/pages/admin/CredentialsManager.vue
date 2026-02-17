@@ -73,9 +73,9 @@
                 </span>
 
                 <!-- Actions -->
-                <ActionButtons
-                    @edit="openModal(credential)"
-                    @delete="confirmDelete(credential)"
+                <ActionChips
+                    :actions="crudActions"
+                    @action="$event === 'edit' ? openModal(credential) : confirmDelete(credential)"
                 />
             </div>
         </div>
@@ -174,7 +174,7 @@ import api from '@/services/api';
 import { useToast } from '@/stores/toast';
 import Modal from '@/components/ui/Modal.vue';
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue';
-import ActionButtons from '@/components/admin/ActionButtons.vue';
+import ActionChips, { CRUD_ACTIONS } from '@/components/admin/ActionChips.vue';
 
 const toast = useToast();
 const loading = ref(true);
@@ -189,6 +189,8 @@ const deletingCredential = ref(null);
 // Drag and drop state
 const dragIndex = ref(null);
 const dragOverIndex = ref(null);
+
+const crudActions = [CRUD_ACTIONS.edit, CRUD_ACTIONS.delete];
 
 const form = ref({
     name: '',

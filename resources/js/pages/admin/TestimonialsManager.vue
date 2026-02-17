@@ -66,20 +66,10 @@
                     "{{ testimonial.quote }}"
                 </blockquote>
 
-                <div class="flex justify-end gap-2">
-                    <button
-                        @click="openModal(testimonial)"
-                        class="text-sm text-mountain-blue hover:text-mountain-blue-dark"
-                    >
-                        Edit
-                    </button>
-                    <button
-                        @click="confirmDelete(testimonial)"
-                        class="text-sm text-terracotta hover:text-terracotta/80"
-                    >
-                        Delete
-                    </button>
-                </div>
+                <ActionChips
+                    :actions="crudActions"
+                    @action="$event === 'edit' ? openModal(testimonial) : confirmDelete(testimonial)"
+                />
             </div>
         </div>
 
@@ -199,6 +189,7 @@ import { useToast } from '@/stores/toast';
 import Modal from '@/components/ui/Modal.vue';
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue';
 import ColorPicker from '@/components/admin/ColorPicker.vue';
+import ActionChips, { CRUD_ACTIONS } from '@/components/admin/ActionChips.vue';
 
 const toast = useToast();
 const loading = ref(true);
@@ -209,6 +200,8 @@ const modalOpen = ref(false);
 const deleteDialogOpen = ref(false);
 const editingTestimonial = ref(null);
 const deletingTestimonial = ref(null);
+
+const crudActions = [CRUD_ACTIONS.edit, CRUD_ACTIONS.delete];
 
 const form = ref({
     client_name: '',
