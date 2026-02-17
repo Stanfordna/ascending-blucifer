@@ -13,13 +13,40 @@
         <p class="max-w-xl mx-auto text-lg font-light opacity-95 mb-8">
             {{ content.getBlock('contact_description', "Your journey to better health starts with a conversation. Schedule a consultation and let's explore what's possible together.") }}
         </p>
-        <a href="#" class="btn btn-white">
+
+        <!-- Contact Form or Mailto Button -->
+        <ContactForm v-if="formEnabled" />
+        <a v-else :href="mailtoLink" class="btn btn-white">
             {{ content.getBlock('contact_button', 'Schedule Your Consultation') }}
         </a>
     </section>
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue';
 import { useContentStore } from '@/stores/content';
+import api from '@/services/api';
+import ContactForm from './ContactForm.vue';
+
 const content = useContentStore();
+
+const formEnabled = ref(false);
+const contactConfig = ref({});
+
+const mailtoLink = computed(() => {
+    const email = contactConfig.value.contact_email || '';
+    const subject = encodeURIComponent(contactConfig.value.email_subject || 'Consultation Inquiry');
+    const body = encodeURIComponent(contactConfig.value.email_body || '');
+    return `mailto:${email}?subject=${subject}&body=${body}`;
+});
+
+onMounted(async () => {
+    try {
+        const response = await api.get('/contact-config');
+        contactConfig.value = response.data;
+        formEnabled.value = response.data.form_enabled;
+    } catch (e) {
+        // Defaults: form disabled, no mailto data
+    }
+});
 </script>

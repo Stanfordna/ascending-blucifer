@@ -31,4 +31,28 @@ class SiteSettingController extends Controller
 
         return response()->json(['message' => 'Settings updated']);
     }
+
+    public function contactFormConfig(): JsonResponse
+    {
+        $settings = SiteSetting::where('group', 'contact_form')->get();
+
+        return response()->json($settings);
+    }
+
+    public function updateContactFormConfig(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'settings' => ['required', 'array'],
+            'settings.*.key' => ['required', 'string'],
+            'settings.*.value' => ['nullable', 'string'],
+        ]);
+
+        foreach ($validated['settings'] as $setting) {
+            SiteSetting::where('key', $setting['key'])
+                ->where('group', 'contact_form')
+                ->update(['value' => $setting['value']]);
+        }
+
+        return response()->json(['message' => 'Contact form settings updated']);
+    }
 }

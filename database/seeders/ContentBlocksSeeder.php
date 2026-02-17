@@ -10,32 +10,32 @@ class ContentBlocksSeeder extends Seeder
     public function run(): void
     {
         $blocks = [
-            // Welcome Section (formerly Hero)
+            // Welcome Banner Section
             [
                 'key' => 'welcome_script',
                 'section' => 'welcome',
-                'label' => 'Welcome Script Text',
+                'label' => 'Script Text',
                 'type' => 'text',
                 'content' => 'Diabetes Care & Nutrition',
             ],
             [
                 'key' => 'welcome_title',
                 'section' => 'welcome',
-                'label' => 'Welcome Title',
+                'label' => 'Main Title',
                 'type' => 'text',
                 'content' => 'Nourishing Your Journey',
             ],
             [
                 'key' => 'welcome_title_accent',
                 'section' => 'welcome',
-                'label' => 'Welcome Title Accent',
+                'label' => 'Title Accent',
                 'type' => 'text',
                 'content' => 'to Wellness',
             ],
             [
                 'key' => 'welcome_description',
                 'section' => 'welcome',
-                'label' => 'Welcome Description',
+                'label' => 'Description',
                 'type' => 'textarea',
                 'content' => "Expert guidance in diabetes management and nutrition, rooted in the spirit of the Colorado mountains. Together, we'll find your path to thriving.",
             ],
@@ -112,6 +112,52 @@ class ContentBlocksSeeder extends Seeder
                 'label' => 'Contact Button Text',
                 'type' => 'text',
                 'content' => 'Schedule Your Consultation',
+            ],
+
+            // Blog Post CTA
+            [
+                'key' => 'blog_cta_title',
+                'section' => 'blog_cta',
+                'label' => 'CTA Title',
+                'type' => 'text',
+                'content' => 'Ready to Take the Next Step?',
+            ],
+            [
+                'key' => 'blog_cta_description',
+                'section' => 'blog_cta',
+                'label' => 'CTA Description',
+                'type' => 'textarea',
+                'content' => 'Schedule a consultation to discuss how personalized nutrition can support your health goals.',
+            ],
+            [
+                'key' => 'blog_cta_button',
+                'section' => 'blog_cta',
+                'label' => 'CTA Button Text',
+                'type' => 'text',
+                'content' => 'Book a Consultation',
+            ],
+
+            // Service Detail CTA
+            [
+                'key' => 'service_cta_title',
+                'section' => 'service_cta',
+                'label' => 'CTA Title',
+                'type' => 'text',
+                'content' => 'Interested in This Service?',
+            ],
+            [
+                'key' => 'service_cta_description',
+                'section' => 'service_cta',
+                'label' => 'CTA Description',
+                'type' => 'textarea',
+                'content' => 'Schedule a consultation to learn how this service can support your health goals.',
+            ],
+            [
+                'key' => 'service_cta_button',
+                'section' => 'service_cta',
+                'label' => 'CTA Button Text',
+                'type' => 'text',
+                'content' => 'Book a Consultation',
             ],
 
             // Footer Section

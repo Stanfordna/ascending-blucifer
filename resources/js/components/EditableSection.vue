@@ -20,7 +20,7 @@
         </Transition>
 
         <SectionEditModal
-            v-if="!link"
+            v-if="!link && !customHandler"
             v-model="modalOpen"
             :section="section"
             :section-label="displayLabel"
@@ -49,6 +49,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    customHandler: {
+        type: Function,
+        default: null,
+    },
 });
 
 const router = useRouter();
@@ -74,7 +78,9 @@ const displayLabel = computed(() => {
 });
 
 function handleEdit() {
-    if (props.link) {
+    if (props.customHandler) {
+        props.customHandler();
+    } else if (props.link) {
         router.push(props.link);
     } else {
         modalOpen.value = true;

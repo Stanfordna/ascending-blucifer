@@ -6,7 +6,7 @@
                 <select
                     v-model="statusFilter"
                     @change="fetchBookings"
-                    class="px-4 py-2 border border-gray-300 rounded-lg focus:border-mountain-blue focus:ring-1 focus:ring-mountain-blue outline-none"
+                    class="pl-4 pr-8 py-2 border border-gray-300 rounded-lg focus:border-mountain-blue focus:ring-1 focus:ring-mountain-blue outline-none"
                 >
                     <option value="">All Bookings</option>
                     <option value="pending">Pending</option>
@@ -14,6 +14,23 @@
                     <option value="completed">Completed</option>
                     <option value="cancelled">Cancelled</option>
                 </select>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <span class="text-sm text-charcoal-light">Booking Requests</span>
+                    <button
+                        type="button"
+                        @click="toggleBooking"
+                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                        :class="bookingEnabled ? 'bg-mountain-blue' : 'bg-gray-300'"
+                    >
+                        <span
+                            class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                            :class="bookingEnabled ? 'translate-x-6' : 'translate-x-1'"
+                        />
+                    </button>
+                </label>
             </div>
         </div>
 
@@ -177,7 +194,7 @@
                         <label class="block text-xs font-medium text-charcoal-light mb-1">Status</label>
                         <select
                             v-model="selectedBooking.status"
-                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-mountain-blue focus:ring-1 focus:ring-mountain-blue outline-none"
+                            class="w-full pl-3 pr-8 py-2 border border-gray-300 rounded-lg focus:border-mountain-blue focus:ring-1 focus:ring-mountain-blue outline-none"
                         >
                             <option value="pending">Pending</option>
                             <option value="confirmed">Confirmed</option>
@@ -238,6 +255,7 @@ const toast = useToast();
 const loading = ref(true);
 const saving = ref(false);
 const bookings = ref([]);
+const bookingEnabled = ref(false);
 const statusFilter = ref('');
 const modalOpen = ref(false);
 const selectedBooking = ref(null);
@@ -327,7 +345,31 @@ async function updateBooking() {
     }
 }
 
+async function fetchBookingToggle() {
+    try {
+        const response = await api.get('/admin/contact-form-config');
+        const setting = response.data.find(s => s.key === 'booking_requests_enabled');
+        bookingEnabled.value = setting?.value === '1';
+    } catch (e) {
+        // Defaults
+    }
+}
+
+async function toggleBooking() {
+    bookingEnabled.value = !bookingEnabled.value;
+    try {
+        await api.put('/admin/contact-form-config', {
+            settings: [{ key: 'booking_requests_enabled', value: bookingEnabled.value ? '1' : '0' }],
+        });
+        toast.success(bookingEnabled.value ? 'Booking requests enabled' : 'Booking requests disabled');
+    } catch (e) {
+        bookingEnabled.value = !bookingEnabled.value;
+        toast.error('Failed to update');
+    }
+}
+
 onMounted(() => {
     fetchBookings();
+    fetchBookingToggle();
 });
 </script>

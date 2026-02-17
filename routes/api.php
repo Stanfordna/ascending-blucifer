@@ -10,10 +10,21 @@ use App\Http\Controllers\Admin\ImageController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::get('/content-blocks', [ContentBlockController::class, 'publicIndex']);
+Route::get('/blog-posts', [BlogPostController::class, 'publicIndex']);
+Route::get('/blog-posts/{slug}', [BlogPostController::class, 'publicShow']);
+Route::get('/testimonials', [TestimonialController::class, 'publicIndex']);
+Route::get('/testimonials/all', [TestimonialController::class, 'allPublic']);
+Route::get('/services', [ServiceController::class, 'publicIndex']);
+Route::get('/services/all', [ServiceController::class, 'allPublic']);
+Route::get('/services/{slug}', [ServiceController::class, 'publicShow'])->where('slug', '[a-z0-9\-]+');
+Route::get('/credentials', [CredentialController::class, 'publicIndex']);
+Route::get('/contact-config', [ContactController::class, 'config']);
+Route::post('/contact', [ContactController::class, 'store']);
 
 // Auth routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -22,9 +33,14 @@ Route::get('/user', [AuthController::class, 'user'])->middleware('auth:sanctum')
 
 // Admin routes (protected)
 Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
+    // Password change
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
+
     // Site Settings
     Route::get('/settings', [SiteSettingController::class, 'index']);
     Route::put('/settings', [SiteSettingController::class, 'bulkUpdate']);
+    Route::get('/contact-form-config', [SiteSettingController::class, 'contactFormConfig']);
+    Route::put('/contact-form-config', [SiteSettingController::class, 'updateContactFormConfig']);
 
     // Content Blocks
     Route::get('/content-blocks', [ContentBlockController::class, 'index']);
@@ -40,6 +56,7 @@ Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
 
     // Blog Posts
     Route::apiResource('blog-posts', BlogPostController::class);
+    Route::post('/blog-posts/reorder-featured', [BlogPostController::class, 'reorderFeatured']);
 
     // Testimonials
     Route::apiResource('testimonials', TestimonialController::class);
