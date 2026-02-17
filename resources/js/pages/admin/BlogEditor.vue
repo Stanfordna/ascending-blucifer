@@ -1,5 +1,5 @@
 <template>
-    <div class="max-w-4xl">
+    <div class="max-w-6xl relative pb-20">
         <!-- Loading -->
         <div v-if="loading" class="flex items-center justify-center py-12">
             <div class="animate-spin w-8 h-8 border-2 border-mountain-blue border-t-transparent rounded-full"></div>
@@ -17,9 +17,9 @@
                 />
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
                 <!-- Main Content -->
-                <div class="lg:col-span-2 space-y-6">
+                <div class="lg:col-span-3 space-y-6">
                     <!-- Excerpt -->
                     <div class="bg-white rounded-lg border border-gray-200 p-6">
                         <label class="block text-sm font-medium text-charcoal mb-2">Excerpt</label>
@@ -32,19 +32,22 @@
                     </div>
 
                     <!-- Content -->
-                    <div class="bg-white rounded-lg border border-gray-200 p-6">
-                        <label class="block text-sm font-medium text-charcoal mb-2">Content</label>
-                        <textarea
+                    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <MdEditor
                             v-model="form.content"
-                            rows="20"
+                            language="en-US"
+                            :toolbars="editorToolbars"
+                            :preview="false"
+                            :footers="[]"
                             placeholder="Write your post content here..."
-                            class="w-full px-0 py-0 border-0 focus:ring-0 outline-none resize-y"
-                        ></textarea>
+                            :style="{ height: '500px' }"
+                            no-upload-img
+                        />
                     </div>
                 </div>
 
                 <!-- Sidebar -->
-                <div class="space-y-6">
+                <div class="lg:col-span-2 space-y-6">
                     <!-- Publish Settings -->
                     <div class="bg-white rounded-lg border border-gray-200 p-6">
                         <h3 class="font-medium text-charcoal mb-4">Publish Settings</h3>
@@ -82,16 +85,37 @@
                                     <span class="text-sm text-charcoal">Featured post</span>
                                 </label>
                             </div>
+
+                            <!-- View published post link -->
+                            <div v-if="isEditing && form.slug && form.published_at">
+                                <a
+                                    :href="`/blog/${form.slug}`"
+                                    target="_blank"
+                                    class="inline-flex items-center gap-1 text-sm text-mountain-blue hover:text-mountain-blue-dark"
+                                >
+                                    View post
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
 
                     <!-- SEO -->
-                    <div class="bg-white rounded-lg border border-gray-200 p-6">
+                    <div class="bg-white rounded-lg border border-gray-200 p-6 flex-1">
                         <h3 class="font-medium text-charcoal mb-4">SEO</h3>
 
                         <div class="space-y-4">
                             <div>
-                                <label for="meta_title" class="block text-sm font-medium text-charcoal mb-1">Meta Title</label>
+                                <div class="flex items-center gap-1 mb-1">
+                                    <label for="meta_title" class="block text-sm font-medium text-charcoal">Meta Title</label>
+                                    <InfoTip title="Writing Great Meta Titles">
+                                        <p>Keep it under 60 characters so it doesn't get cut off in search results.</p>
+                                        <p class="mt-2"><strong>Good example:</strong><br>"Mindful Eating Tips for Diabetes | Maggie Chamberlain"</p>
+                                        <p class="mt-2"><strong>Include:</strong> Primary keyword + your name/brand</p>
+                                    </InfoTip>
+                                </div>
                                 <input
                                     id="meta_title"
                                     v-model="form.meta_title"
@@ -99,44 +123,78 @@
                                     placeholder="Page title for search engines"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-mountain-blue focus:ring-1 focus:ring-mountain-blue outline-none text-sm"
                                 />
+                                <p class="text-xs mt-1" :class="(form.meta_title?.length || 0) > 60 ? 'text-terracotta' : 'text-charcoal-light'">
+                                    {{ form.meta_title?.length || 0 }}/60 characters
+                                </p>
                             </div>
 
                             <div>
-                                <label for="meta_description" class="block text-sm font-medium text-charcoal mb-1">Meta Description</label>
+                                <div class="flex items-center gap-1 mb-1">
+                                    <label for="meta_description" class="block text-sm font-medium text-charcoal">Meta Description</label>
+                                    <InfoTip title="Writing Great Meta Descriptions">
+                                        <p>This appears below the title in search results. Make it compelling!</p>
+                                        <p class="mt-2"><strong>Good example:</strong><br>"Learn practical mindful eating strategies to manage blood sugar and enjoy food again. Expert tips from a Denver diabetes educator."</p>
+                                        <p class="mt-2"><strong>Include:</strong> What the reader will learn + why it matters + a call to action</p>
+                                    </InfoTip>
+                                </div>
                                 <textarea
                                     id="meta_description"
                                     v-model="form.meta_description"
-                                    rows="3"
+                                    rows="4"
                                     placeholder="Brief description for search results"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-mountain-blue focus:ring-1 focus:ring-mountain-blue outline-none text-sm resize-none"
                                 ></textarea>
+                                <p class="text-xs mt-1" :class="(form.meta_description?.length || 0) > 160 ? 'text-terracotta' : 'text-charcoal-light'">
+                                    {{ form.meta_description?.length || 0 }}/160 characters
+                                </p>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Color Overrides -->
+                    <div class="bg-white rounded-lg border border-gray-200 p-6">
+                        <h3 class="font-medium text-charcoal mb-2">Color Overrides</h3>
+                        <p class="text-xs text-charcoal-light mb-4">Override site brand colors for this post. Leave blank to use defaults.</p>
+                        <div class="space-y-3">
+                            <ColorPicker v-model="form.color_primary" label="Primary" />
+                            <ColorPicker v-model="form.color_secondary" label="Secondary" />
+                            <ColorPicker v-model="form.color_accent" label="Accent" />
+                        </div>
+                        <button
+                            v-if="form.color_primary || form.color_secondary || form.color_accent"
+                            type="button"
+                            @click="form.color_primary = ''; form.color_secondary = ''; form.color_accent = '';"
+                            class="text-sm text-charcoal-light hover:text-charcoal mt-3"
+                        >
+                            Clear all overrides
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Actions -->
-            <div class="flex items-center justify-between bg-white rounded-lg border border-gray-200 p-4">
-                <router-link to="/admin/blog" class="text-charcoal-light hover:text-charcoal transition-colors">
-                    &larr; Back to posts
-                </router-link>
-                <div class="flex gap-3">
-                    <button
-                        type="button"
-                        @click="savePost(true)"
-                        class="px-4 py-2 text-sm font-medium text-charcoal-light hover:text-charcoal border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-                        :disabled="saving"
-                    >
-                        Save as Draft
-                    </button>
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
-                        :disabled="saving"
-                    >
-                        {{ saving ? 'Saving...' : (isEditing ? 'Update Post' : 'Publish Post') }}
-                    </button>
+            <!-- Actions - Fixed at bottom -->
+            <div class="fixed bottom-0 left-0 right-0 lg:left-64 bg-white border-t border-gray-200 p-4 z-10">
+                <div class="max-w-6xl mx-auto flex items-center justify-between">
+                    <router-link to="/admin/blog" class="text-charcoal-light hover:text-charcoal transition-colors">
+                        &larr; Back to posts
+                    </router-link>
+                    <div class="flex gap-3">
+                        <button
+                            type="button"
+                            @click="savePost(true)"
+                            class="px-4 py-2 text-sm font-medium text-charcoal-light hover:text-charcoal border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                            :disabled="saving"
+                        >
+                            Save as Draft
+                        </button>
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            :disabled="saving"
+                        >
+                            {{ saving ? 'Saving...' : (isEditing ? 'Update Post' : 'Publish Post') }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -146,8 +204,20 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { MdEditor } from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
 import api from '@/services/api';
 import { useToast } from '@/stores/toast';
+import InfoTip from '@/components/ui/InfoTip.vue';
+import ColorPicker from '@/components/admin/ColorPicker.vue';
+
+const editorToolbars = [
+    'bold', 'italic', 'strikeThrough', '-',
+    'title', 'quote', 'unorderedList', 'orderedList', '-',
+    'link', 'image', 'table', '-',
+    'revoke', 'next', '=',
+    'preview',
+];
 
 const route = useRoute();
 const router = useRouter();
@@ -165,6 +235,9 @@ const form = ref({
     is_featured: false,
     meta_title: '',
     meta_description: '',
+    color_primary: '',
+    color_secondary: '',
+    color_accent: '',
 });
 
 const isEditing = computed(() => !!route.params.id);
@@ -185,6 +258,9 @@ async function fetchPost() {
             is_featured: post.is_featured,
             meta_title: post.meta_title || '',
             meta_description: post.meta_description || '',
+            color_primary: post.color_primary || '',
+            color_secondary: post.color_secondary || '',
+            color_accent: post.color_accent || '',
         };
     } catch (e) {
         toast.error('Failed to load post');
@@ -203,15 +279,36 @@ async function savePost(asDraft = false) {
     saving.value = true;
 
     const data = { ...form.value };
+
+    // Handle publish date
     if (asDraft) {
         data.published_at = null;
     } else if (!data.published_at) {
+        // Set to now if publishing without a date
         data.published_at = new Date().toISOString();
+    } else {
+        // Convert datetime-local format to ISO string for Laravel
+        data.published_at = new Date(data.published_at).toISOString();
     }
 
     try {
         if (isEditing.value) {
-            await api.put(`/admin/blog-posts/${route.params.id}`, data);
+            const response = await api.put(`/admin/blog-posts/${route.params.id}`, data);
+            // Update form with server response to ensure consistency
+            const post = response.data;
+            form.value = {
+                title: post.title,
+                slug: post.slug,
+                excerpt: post.excerpt || '',
+                content: post.content || '',
+                published_at: post.published_at ? formatDateForInput(post.published_at) : '',
+                is_featured: post.is_featured,
+                meta_title: post.meta_title || '',
+                meta_description: post.meta_description || '',
+                color_primary: post.color_primary || '',
+                color_secondary: post.color_secondary || '',
+                color_accent: post.color_accent || '',
+            };
             toast.success('Post updated');
         } else {
             const response = await api.post('/admin/blog-posts', data);
