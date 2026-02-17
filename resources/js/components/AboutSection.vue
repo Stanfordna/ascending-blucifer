@@ -43,13 +43,13 @@
                 </p>
 
                 <!-- Credentials -->
-                <div class="flex flex-wrap gap-3">
+                <div v-if="credentials.length" class="flex flex-wrap gap-3">
                     <span
                         v-for="credential in credentials"
-                        :key="credential"
+                        :key="credential.id"
                         class="bg-white/10 px-5 py-2 text-sm tracking-wide border border-white/20"
                     >
-                        {{ credential }}
+                        {{ credential.abbreviation || credential.name }}
                     </span>
                 </div>
             </div>
@@ -58,15 +58,24 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useContentStore } from '@/stores/content';
+import api from '@/services/api';
 
 const content = useContentStore();
 
-const credentials = [
-    'Master of Science',
-    'Registered Dietitian',
-    'CDCES Certified',
-    'Louisiana Tech University',
-    'MSU Denver',
-];
+const credentials = ref([]);
+
+async function fetchCredentials() {
+    try {
+        const response = await api.get('/credentials');
+        credentials.value = response.data;
+    } catch (e) {
+        console.error('Failed to load credentials', e);
+    }
+}
+
+onMounted(() => {
+    fetchCredentials();
+});
 </script>

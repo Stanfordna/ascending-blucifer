@@ -6,6 +6,11 @@ import PublicLayout from '@/components/PublicLayout.vue';
 
 // Lazy-loaded pages
 const LoginPage = () => import('@/pages/LoginPage.vue');
+const BlogArchive = () => import('@/pages/BlogArchive.vue');
+const BlogPost = () => import('@/pages/BlogPost.vue');
+const ServicesPage = () => import('@/pages/ServicesPage.vue');
+const ServiceDetail = () => import('@/pages/ServiceDetail.vue');
+const TestimonialsPage = () => import('@/pages/TestimonialsPage.vue');
 const AdminLayout = () => import('@/components/admin/AdminLayout.vue');
 const Dashboard = () => import('@/pages/admin/Dashboard.vue');
 const SettingsEditor = () => import('@/pages/admin/SettingsEditor.vue');
@@ -22,6 +27,40 @@ const routes = [
     {
         path: '/',
         component: PublicLayout,
+    },
+    {
+        path: '/services',
+        name: 'services',
+        component: ServicesPage,
+    },
+    {
+        path: '/services/:slug',
+        name: 'service.detail',
+        component: ServiceDetail,
+        props: true,
+    },
+    {
+        path: '/testimonials',
+        name: 'testimonials',
+        component: TestimonialsPage,
+    },
+    {
+        path: '/blog',
+        name: 'blog',
+        component: BlogArchive,
+    },
+    {
+        path: '/blog/:slug',
+        name: 'blog.post',
+        component: BlogPost,
+        props: true,
+    },
+    {
+        path: '/blog/preview/:id',
+        name: 'blog.preview',
+        component: BlogPost,
+        props: route => ({ id: route.params.id, preview: true }),
+        meta: { requiresAuth: true },
     },
     {
         path: '/login',

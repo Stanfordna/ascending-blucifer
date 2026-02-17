@@ -14,12 +14,15 @@
                 </div>
 
                 <!-- Services -->
-                <div>
+                <div v-if="services.length">
                     <h4 class="text-xs tracking-widest uppercase text-gold mb-5">Services</h4>
                     <ul class="space-y-3">
-                        <li v-for="link in servicesLinks" :key="link">
-                            <a href="#" class="text-white/60 text-sm font-light hover:text-terracotta-light transition-colors">
-                                {{ link }}
+                        <li v-for="service in services" :key="service.id">
+                            <a
+                                :href="service.link_url || '/#services'"
+                                class="text-white/60 text-sm font-light hover:text-terracotta-light transition-colors"
+                            >
+                                {{ service.title }}
                             </a>
                         </li>
                     </ul>
@@ -29,9 +32,9 @@
                 <div>
                     <h4 class="text-xs tracking-widest uppercase text-gold mb-5">Explore</h4>
                     <ul class="space-y-3">
-                        <li v-for="link in exploreLinks" :key="link">
-                            <a href="#" class="text-white/60 text-sm font-light hover:text-terracotta-light transition-colors">
-                                {{ link }}
+                        <li v-for="link in exploreLinks" :key="link.label">
+                            <a :href="link.href" class="text-white/60 text-sm font-light hover:text-terracotta-light transition-colors">
+                                {{ link.label }}
                             </a>
                         </li>
                     </ul>
@@ -41,10 +44,15 @@
                 <div>
                     <h4 class="text-xs tracking-widest uppercase text-gold mb-5">Connect</h4>
                     <ul class="space-y-3">
-                        <li v-for="link in connectLinks" :key="link">
-                            <a href="#" class="text-white/60 text-sm font-light hover:text-terracotta-light transition-colors">
-                                {{ link }}
-                            </a>
+                        <li v-for="link in connectLinks" :key="link.label">
+                            <component
+                                :is="link.href ? 'a' : 'span'"
+                                :href="link.href"
+                                class="text-white/60 text-sm font-light"
+                                :class="{ 'hover:text-terracotta-light transition-colors': link.href }"
+                            >
+                                {{ link.label }}
+                            </component>
                         </li>
                     </ul>
                 </div>
@@ -68,30 +76,39 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useContentStore } from '@/stores/content';
+import api from '@/services/api';
 
 const content = useContentStore();
 const currentYear = computed(() => new Date().getFullYear());
 
-const servicesLinks = [
-    'Diabetes Education',
-    'Nutrition Guidance',
-    'Pump Training',
-    'Speaking',
-];
+const services = ref([]);
+
+async function fetchServices() {
+    try {
+        const response = await api.get('/services');
+        services.value = response.data;
+    } catch (e) {
+        console.error('Failed to load services', e);
+    }
+}
+
+onMounted(() => {
+    fetchServices();
+});
 
 const exploreLinks = [
-    'About',
-    'Journal',
-    'Resources',
-    'FAQ',
+    { label: 'Services', href: '/services' },
+    { label: 'Testimonials', href: '/testimonials' },
+    { label: 'About', href: '/#about' },
+    { label: 'Journal', href: '/blog' },
 ];
 
 const connectLinks = [
-    'Denver, Colorado',
-    'LinkedIn',
-    'Instagram',
-    'Email',
+    { label: 'Denver, Colorado', href: null },
+    { label: 'LinkedIn', href: '#' },
+    { label: 'Instagram', href: '#' },
+    { label: 'Email', href: 'mailto:' },
 ];
 </script>

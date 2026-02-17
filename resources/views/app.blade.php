@@ -17,6 +17,17 @@
     <meta property="og:type" content="website">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @php
+        $siteColors = [
+            'primary' => \App\Models\SiteSetting::get('color_primary', '#4A7C89'),
+            'secondary' => \App\Models\SiteSetting::get('color_secondary', '#C4785A'),
+            'accent' => \App\Models\SiteSetting::get('color_accent', '#D4A84B'),
+        ];
+    @endphp
+    <script>
+        window.__SITE_COLORS__ = @json($siteColors);
+    </script>
 </head>
 <body class="antialiased">
     <div id="app"></div>

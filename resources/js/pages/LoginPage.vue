@@ -1,5 +1,6 @@
 <template>
     <div class="min-h-screen bg-cream flex items-center justify-center px-4">
+        <ToastContainer />
         <div class="max-w-md w-full">
             <!-- Logo/Brand -->
             <div class="text-center mb-8">
@@ -91,6 +92,7 @@
 import { reactive } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import ToastContainer from '@/components/ui/ToastContainer.vue';
 
 const router = useRouter();
 const route = useRoute();
