@@ -10,6 +10,40 @@ use Illuminate\Support\Str;
 
 class BlogPostController extends Controller
 {
+    /**
+     * Public endpoint: Get published blog posts
+     */
+    public function publicIndex(Request $request): JsonResponse
+    {
+        $query = BlogPost::published()
+            ->with('featuredImage')
+            ->recent();
+
+        // Filter by featured if requested
+        if ($request->boolean('featured')) {
+            $query->featured()->orderBy('featured_order');
+        }
+
+        $limit = $request->integer('limit', 10);
+
+        return response()->json(
+            $query->take($limit)->get()
+        );
+    }
+
+    /**
+     * Public endpoint: Get single published post by slug
+     */
+    public function publicShow(string $slug): JsonResponse
+    {
+        $post = BlogPost::published()
+            ->where('slug', $slug)
+            ->with('featuredImage')
+            ->firstOrFail();
+
+        return response()->json($post);
+    }
+
     public function index(): JsonResponse
     {
         return response()->json(
@@ -32,6 +66,9 @@ class BlogPostController extends Controller
             'is_featured' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
+            'color_primary' => ['nullable', 'string', 'max:7'],
+            'color_secondary' => ['nullable', 'string', 'max:7'],
+            'color_accent' => ['nullable', 'string', 'max:7'],
         ]);
 
         if (empty($validated['slug'])) {
@@ -61,9 +98,15 @@ class BlogPostController extends Controller
             'is_featured' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
+            'color_primary' => ['nullable', 'string', 'max:7'],
+            'color_secondary' => ['nullable', 'string', 'max:7'],
+            'color_accent' => ['nullable', 'string', 'max:7'],
         ]);
 
         $blogPost->update($validated);
+
+        // Refresh to get the model with properly cast attributes
+        $blogPost->refresh();
 
         return response()->json($blogPost->load('featuredImage'));
     }
@@ -73,5 +116,22 @@ class BlogPostController extends Controller
         $blogPost->delete();
 
         return response()->json(null, 204);
+    }
+
+    /**
+     * Reorder featured posts
+     */
+    public function reorderFeatured(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'order' => ['required', 'array'],
+            'order.*' => ['integer', 'exists:blog_posts,id'],
+        ]);
+
+        foreach ($validated['order'] as $position => $id) {
+            BlogPost::where('id', $id)->update(['featured_order' => $position]);
+        }
+
+        return response()->json(['message' => 'Featured posts reordered']);
     }
 }

@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
+            $table->text('extended_description')->nullable();
             $table->string('icon')->nullable();
             $table->string('icon_type')->default('emoji');
             $table->unsignedInteger('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
+            $table->boolean('is_featured')->default(false);
             $table->string('link_url')->nullable();
             $table->timestamps();
         });

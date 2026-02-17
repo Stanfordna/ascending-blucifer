@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class BlogPost extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'title',
         'slug',
@@ -17,8 +19,12 @@ class BlogPost extends Model
         'featured_image_id',
         'published_at',
         'is_featured',
+        'featured_order',
         'meta_title',
         'meta_description',
+        'color_primary',
+        'color_secondary',
+        'color_accent',
     ];
 
     protected function casts(): array

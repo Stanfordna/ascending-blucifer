@@ -16,6 +16,27 @@ class TestimonialController extends Controller
         );
     }
 
+    public function publicIndex(): JsonResponse
+    {
+        $testimonials = Testimonial::with('photo')
+            ->active()
+            ->featured()
+            ->ordered()
+            ->get();
+
+        return response()->json($testimonials);
+    }
+
+    public function allPublic(): JsonResponse
+    {
+        $testimonials = Testimonial::with('photo')
+            ->active()
+            ->ordered()
+            ->get();
+
+        return response()->json($testimonials);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -25,6 +46,9 @@ class TestimonialController extends Controller
             'photo_id' => ['nullable', 'exists:images,id'],
             'is_active' => ['boolean'],
             'is_featured' => ['boolean'],
+            'color_primary' => ['nullable', 'string', 'max:7'],
+            'color_secondary' => ['nullable', 'string', 'max:7'],
+            'color_accent' => ['nullable', 'string', 'max:7'],
         ]);
 
         $validated['sort_order'] = Testimonial::max('sort_order') + 1;
@@ -48,6 +72,9 @@ class TestimonialController extends Controller
             'photo_id' => ['nullable', 'exists:images,id'],
             'is_active' => ['boolean'],
             'is_featured' => ['boolean'],
+            'color_primary' => ['nullable', 'string', 'max:7'],
+            'color_secondary' => ['nullable', 'string', 'max:7'],
+            'color_accent' => ['nullable', 'string', 'max:7'],
         ]);
 
         $testimonial->update($validated);

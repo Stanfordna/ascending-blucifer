@@ -16,6 +16,13 @@ class CredentialController extends Controller
         );
     }
 
+    public function publicIndex(): JsonResponse
+    {
+        return response()->json(
+            Credential::where('is_active', true)->ordered()->get()
+        );
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([

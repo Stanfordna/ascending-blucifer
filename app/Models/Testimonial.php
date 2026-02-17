@@ -16,6 +16,9 @@ class Testimonial extends Model
         'sort_order',
         'is_active',
         'is_featured',
+        'color_primary',
+        'color_secondary',
+        'color_accent',
     ];
 
     protected function casts(): array

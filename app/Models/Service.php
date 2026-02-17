@@ -10,12 +10,18 @@ class Service extends Model
 {
     protected $fillable = [
         'title',
+        'slug',
         'description',
+        'extended_description',
         'icon',
         'icon_type',
         'sort_order',
         'is_active',
+        'is_featured',
         'link_url',
+        'color_primary',
+        'color_secondary',
+        'color_accent',
     ];
 
     protected function casts(): array
@@ -23,7 +29,13 @@ class Service extends Model
         return [
             'sort_order' => 'integer',
             'is_active' => 'boolean',
+            'is_featured' => 'boolean',
         ];
+    }
+
+    public function scopeFeatured(Builder $query): Builder
+    {
+        return $query->where('is_featured', true);
     }
 
     public function bookingRequests(): HasMany

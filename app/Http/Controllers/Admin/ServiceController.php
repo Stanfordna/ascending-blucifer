@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
@@ -16,16 +17,52 @@ class ServiceController extends Controller
         );
     }
 
+    public function publicIndex(): JsonResponse
+    {
+        return response()->json(
+            Service::where('is_active', true)
+                ->where('is_featured', true)
+                ->ordered()
+                ->get()
+        );
+    }
+
+    public function allPublic(): JsonResponse
+    {
+        return response()->json(
+            Service::where('is_active', true)->ordered()->get()
+        );
+    }
+
+    public function publicShow(string $slug): JsonResponse
+    {
+        $service = Service::where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        return response()->json($service);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:services,slug'],
             'description' => ['required', 'string'],
+            'extended_description' => ['nullable', 'string'],
             'icon' => ['nullable', 'string', 'max:50'],
             'icon_type' => ['nullable', 'string', 'in:emoji,svg,class'],
             'link_url' => ['nullable', 'string', 'max:255'],
             'is_active' => ['boolean'],
+            'is_featured' => ['boolean'],
+            'color_primary' => ['nullable', 'string', 'max:7'],
+            'color_secondary' => ['nullable', 'string', 'max:7'],
+            'color_accent' => ['nullable', 'string', 'max:7'],
         ]);
+
+        if (empty($validated['slug'])) {
+            $validated['slug'] = Str::slug($validated['title']);
+        }
 
         $validated['sort_order'] = Service::max('sort_order') + 1;
 
@@ -43,12 +80,22 @@ class ServiceController extends Controller
     {
         $validated = $request->validate([
             'title' => ['sometimes', 'required', 'string', 'max:255'],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:services,slug,' . $service->id],
             'description' => ['sometimes', 'required', 'string'],
+            'extended_description' => ['nullable', 'string'],
             'icon' => ['nullable', 'string', 'max:50'],
             'icon_type' => ['nullable', 'string', 'in:emoji,svg,class'],
             'link_url' => ['nullable', 'string', 'max:255'],
             'is_active' => ['boolean'],
+            'is_featured' => ['boolean'],
+            'color_primary' => ['nullable', 'string', 'max:7'],
+            'color_secondary' => ['nullable', 'string', 'max:7'],
+            'color_accent' => ['nullable', 'string', 'max:7'],
         ]);
+
+        if (isset($validated['title']) && empty($request->input('slug'))) {
+            $validated['slug'] = Str::slug($validated['title']);
+        }
 
         $service->update($validated);
 

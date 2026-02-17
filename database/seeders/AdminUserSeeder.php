@@ -15,7 +15,7 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => 'Maggie Chamberlain',
                 'email' => 'mchamberlain8@gmail.com',
-                'password' => Hash::make('change-me'),
+                'password' => Hash::make(env('ADMIN_DEFAULT_PASSWORD', 'change-me')),
                 'email_verified_at' => now(),
             ]
         );
